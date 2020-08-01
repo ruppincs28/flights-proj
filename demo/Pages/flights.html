@@ -37,7 +37,7 @@
                 codesArr = JSON.parse(localStorage['locationCodes'])
                 populateDataList(codesArr)
             }
-            // populate datalist
+            // populate datalist with data
 
             // get discounts on page load
             ajaxCall("GET", "../api/discounts", "", getDiscountsForSearchSuccess, discountErr); // load discounts from server for user search
