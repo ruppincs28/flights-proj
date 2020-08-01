@@ -23,7 +23,7 @@
         var codesUrl = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name";
         var airlineCodesUrl = "https://api.skypicker.com/airlines?";
         $(document).ready(function () {
-            // populate datalist
+            // populate datalist with data
             if (!('locationCodes' in localStorage)) {
                 $.get(codesUrl).done((data) => {
                     codesArr = data.locations
