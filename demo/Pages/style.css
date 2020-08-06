@@ -1,0 +1,118 @@
+﻿.container {
+    width: 70%;
+}
+
+/* Space out content a bit */
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+/* Custom page header */
+.header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+    /* Make the masthead heading the same height as the navigation */
+    .header h3 {
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 40px;
+    }
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+        padding-right: 0;
+        padding-left: 0;
+    }
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
+}
+
+#discounted {
+    border: 2px solid red;
+}
+
+#resultPH td {
+    padding: 5px;
+}
+
+#tablePH th {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+button:not(.btn-default) {
+    margin-left: 10px;
+}
+
+form {
+    border: 1px solid black;
+}
+
+/*td {
+            border: 1px solid black;
+        }*/
+
+#noBorder {
+    border: 0px;
+}
+
+#searchRes {
+    font-size: 20px;
+}
+
+.orderBTN {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    margin: 15px;
+    border: none;
+    width: 10%;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.cancelOrderBTN {
+    background-color: #FF0000;
+    color: white;
+    padding: 12px;
+    margin: 15px;
+    border: none;
+    width: 10%;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+input[type=text], input[type=password], #discountStartDate, #discountEndDate {
+    width: 40%;
+    margin: 15px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+label {
+    margin: 7px;
+    display: block;
+}

@@ -27,7 +27,7 @@ $(document).ready(function () {
         $("#adminPanel").hide();
         $("#flightBookForm").show();
     });
-    $("#adminPanelBTN").click(() => {
+    $("#orderInterfaceBTN").click(() => {
         $("#flightBookForm").hide();
         $("#mainFrame").show();
         if ('adminLoggedIn' in localStorage) {
@@ -35,10 +35,8 @@ $(document).ready(function () {
             $("#adminPanel").show();
         } else {
             $("#adminLoginForm").show();
+            return;
         }
-    });
-    $("#orderInterfaceBTN").click(() => {
-        $("#discountInterface").hide();
         ajaxCall("GET", "../api/flights", "", getOrdersSuccess, discountErr); // load orders from server
         $("#orderInterface").show();
     });
@@ -207,7 +205,7 @@ function loginSuccess(data) {
     if (data === "Validated") {
         localStorage['adminLoggedIn'] = "loggedIn";
         swal("logged in successfully!", "Great Job", "success");
-        $('#adminPanelBTN').trigger('click');
+        $('#orderInterfaceBTN').trigger('click');
     }
     else {
         swal("wrong credentials");
@@ -276,24 +274,27 @@ function handleSearchSuccess(data) {
         if (i === 0) {
             $("#tablePH").empty()
             $("#tablePH").append(
-                '<div id="searchRes">Search Query Results:</div>\
-                                                                        <br />\
-                                                                        <table>\
-                                                                        <thead>\
-                                                                            <tr>\
-                                                                                <th>Price</th>\
-                                                                                <th>Departure time</th>\
-                                                                                <th>Arrival time</th>\
-                                                                                <th>From</th>\
-                                                                                <th>To</th>\
-                                                                                <th>Stops</th>\
-                                                                                <th>Airline name</th>\
-                                                                                <th>Store in DB</th>\
-                                                                            </tr>\
-                                                                        </thead>\
-                                                                        <tbody id="resultPH"></tbody>\
-                                                                    </table>'
-            )
+                '<br><div class="col-lg-12">' +
+                '        <div class="panel panel-default">' +
+                '            <div class="panel-heading">' +
+                '                <h3>Search Query Results</h3>' +
+                '            </div>' + '<div class="panel-body">' +
+                '<table class="table table-condensed" style="border-collapse:collapse;">' +
+                '                    <thead>' +
+                '                        <tr>' +
+                '                            <th>&nbsp;</th>' +
+                '                            <th>Price</th>' +
+                '                            <th>Departure time</th>' +
+                '                            <th>Arrival time</th>' +
+                '                            <th>From</th>' +
+                '                            <th>To</th>' +
+                '                            <th>Stops</th>' +
+                '                            <th>Airline name</th>' +
+                '                            <th>Store in DB</th>' +
+                '                        </tr>' +
+                '                    </thead>' +
+                '                    <tbody id="resultPH"></tbody></table></div></div></div>'
+            );
         }
         let currentItem = dataArr[i]
         let flightId = currentItem.id
@@ -339,8 +340,9 @@ function handleSearchSuccess(data) {
                                                 data-flyduration="${flyDuration}" \
                                                 data-airline="${airline}" `
         $("#resultPH").append(
-            '<tr>' +
-            newPriceStr +
+            '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
+            '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
+            '<td>' + price + '</td>' +
             '<td>' + departureTime + '</td>' +
             '<td>' + arrivalTime + '</td>' +
             '<td>' + from + '</td>' +
@@ -348,8 +350,11 @@ function handleSearchSuccess(data) {
             '<td>' + stops + '</td>' +
             '<td>' + airline + '</td>' +
             '<td>' + '<center><input type="button" class="addButton" value="Order"' + dataStr + '/>' + '</center></td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">Demo1</div>' + '</td>' +
             '</tr>'
-        )
+        );
     }
     $(".addButton").on("click", function () {
         document.getElementById("orderForm").reset();
