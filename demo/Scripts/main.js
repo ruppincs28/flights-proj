@@ -339,6 +339,8 @@ function handleSearchSuccess(data) {
                                                 data-numstops="${numStops}" \
                                                 data-flyduration="${flyDuration}" \
                                                 data-airline="${airline}" `
+        let maxConnectionAssArr = getMaxConnection(currentItem.route);
+        let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CodeFrom}` : `No connection`;
         $("#resultPH").append(
             '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
             '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
@@ -352,7 +354,7 @@ function handleSearchSuccess(data) {
             '<td>' + '<center><input type="button" class="addButton" value="Order"' + dataStr + '/>' + '</center></td>' +
             '</tr>' +
             '<tr>' +
-            '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">Demo1</div>' + '</td>' +
+            '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">' + maxConnectionStr + '</div>' + '</td>' +
             '</tr>'
         );
     }
@@ -435,6 +437,43 @@ function constructLegs(route, tripId) {
         result.push(routeObj);
     }
     return result;
+}
+
+
+function getMaxConnection(route) {
+    result = [];
+    let maxTimeSpentInCountry = 0;
+    let maxConnection;
+    let timeSpentInCountry = 0;
+    let departureTime, arrivalTime;
+    for (var i = 0; i < route.length; i++) {
+        let { id, flyFrom, flyTo, airline, dTime, aTime, flight_no, dTimeUTC, aTimeUTC } = route[i];
+        departureTime = convertToHumanTime(dTime).replace(" ", "T");
+        lastArrivalTime = arrivalTime;
+        arrivalTime = convertToHumanTime(aTime).replace(" ", "T");
+        currRouteObj = {
+            Id: id,
+            LegNum: i + 1,
+            FlightNo: '' + flight_no,
+            CodeFrom: flyFrom,
+            CodeTo: flyTo,
+            AirlineCode: airline,
+            DepartureTime: convertToHumanTime(dTime).replace(" ", "T"),
+            ArrivalTime: convertToHumanTime(aTime).replace(" ", "T"),
+            FlyDuration: unixToHourMinute(aTimeUTC - dTimeUTC)
+        }
+        if ((i !== 0 && i != route.length - 1) || (route.length == 2 && i == 1)) { // calculate time in country
+            timeSpentInCountry = diffInMinutes(departureTime, lastArrivalTime); // departure from current leg minus arrival to this leg
+            if (timeSpentInCountry > maxTimeSpentInCountry) {
+                maxTimeSpentInCountry = timeSpentInCountry;
+                maxConnection = currRouteObj;
+            }
+        }
+    }
+    return {
+        lengthMaxConnection: maxTimeSpentInCountry / 60,
+        maxConnectionObj: maxConnection
+    };
 }
 
 
