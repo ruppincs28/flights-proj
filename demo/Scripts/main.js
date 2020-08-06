@@ -26,7 +26,6 @@ $(document).ready(function () {
         $("#adminLoginForm").hide();
         $("#adminPanel").hide();
         $("#flightBookForm").show();
-        console.log("benny");
     });
     $("#adminPanelBTN").click(() => {
         $("#flightBookForm").hide();
