@@ -1,5 +1,6 @@
 ﻿var codesUrl = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name";
 var airlineCodesUrl = "https://api.skypicker.com/airlines?";
+var triposoCreds = "account=MLMIQSMM&token=0dxs7hkxphxfvovs2xmxk2vourmpbxmp";
 $(document).ready(function () {
     // populate datalist with data
     if (!('locationCodes' in localStorage)) {
@@ -18,7 +19,17 @@ $(document).ready(function () {
     // populate datalist with data
 
     // get discounts on page load
-    ajaxCall("GET", "../api/discounts", "", getDiscountsForSearchSuccess, discountErr); // load discounts from server for user search
+    var triposoQueryURL = getQueryURLTriposo("Amsterdam", "2020-09-7", "2020-09-9", "4:19", "17:19");
+    $.get(triposoQueryURL).done((data) => {
+        console.log(data);
+        //localStorage["discountsUpdated"] = JSON.stringify(data);
+        $("#loadingTabs").hide();
+        $("#tabs").show();
+    });
+    $.get(triposoQueryURL).fail((err) => {
+        console.log(err);
+    });
+    //ajaxCall("GET", getQueryURLTriposo("Amsterdam", "2020-09-7", "2020-09-9", "4:19", "17:19"), "", (data) => console.log(data), discountErr); // load discounts from server for user search
 
     // interface show/hide handling
     $("#searchBookFlights").click(() => {
@@ -124,13 +135,6 @@ function getOrdersSuccess(orderdata) {
     catch (err) {
         console.log("err: " + err);
     }
-}
-
-
-function getDiscountsForSearchSuccess(data) {
-    localStorage["discountsUpdated"] = JSON.stringify(data);
-    $("#loadingTabs").hide();
-    $("#tabs").show();
 }
 
 
@@ -340,7 +344,9 @@ function handleSearchSuccess(data) {
                                                 data-flyduration="${flyDuration}" \
                                                 data-airline="${airline}" `
         let maxConnectionAssArr = getMaxConnection(currentItem.route);
-        let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CodeFrom}` : `No connection`;
+        let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
+                ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}`
+                    : `No connection`;
         $("#resultPH").append(
             '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
             '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
@@ -418,6 +424,12 @@ function getQueryURL(from, to, dateFrom, dateTo) {
 }
 
 
+function getQueryURLTriposo(locationId, startDate, endDate, arrivalTime, departureTime) {
+    return `https://www.triposo.com/api/20200803/day_planner.json?location_id=${locationId}&start_date=${startDate}
+                &end_date=${endDate}&arrival_time=${arrivalTime}&departure_time=${departureTime}&${triposoCreds}`
+}
+
+
 function constructLegs(route, tripId) {
     result = []
     for (var i = 0; i < route.length; i++) {
@@ -447,7 +459,7 @@ function getMaxConnection(route) {
     let timeSpentInCountry = 0;
     let departureTime, arrivalTime;
     for (var i = 0; i < route.length; i++) {
-        let { id, flyFrom, flyTo, airline, dTime, aTime, flight_no, dTimeUTC, aTimeUTC } = route[i];
+        let { id, cityFrom, flyFrom, flyTo, airline, dTime, aTime, flight_no, dTimeUTC, aTimeUTC } = route[i];
         departureTime = convertToHumanTime(dTime).replace(" ", "T");
         lastArrivalTime = arrivalTime;
         arrivalTime = convertToHumanTime(aTime).replace(" ", "T");
@@ -455,6 +467,7 @@ function getMaxConnection(route) {
             Id: id,
             LegNum: i + 1,
             FlightNo: '' + flight_no,
+            CityFrom: cityFrom,
             CodeFrom: flyFrom,
             CodeTo: flyTo,
             AirlineCode: airline,
