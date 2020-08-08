@@ -24,7 +24,7 @@ $(document).ready(function () {
         console.log(data);
         //localStorage["discountsUpdated"] = JSON.stringify(data);
         $("#loadingTabs").hide();
-        $("#tabs").show();
+        $("#tabsNav").show();
     });
     $.get(triposoQueryURL).fail((err) => {
         console.log(err);

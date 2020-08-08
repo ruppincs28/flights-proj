@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="header clearfix">
+        <div class="header clearfix" id="tabsNav" style="display: none;">
             <nav>
                 <ul class="nav nav-pills pull-right">
                     <li role="presentation" class="active"><a href="#" onclick="location.reload();">Home</a></li>
@@ -34,7 +34,6 @@
             </nav>
             <h3 class="text-muted"><img id="logo" src="logo.png" /></h3>
         </div>
-        <br /><br /><br />
         <div id="loadingTabs">
             Loading...
         </div>
@@ -47,8 +46,6 @@
                 Admin Panel
             </button>
         </div>-->
-        <br />
-        <br />
         <div id="mainFrame" class="container-fluid" style="display: none; margin-left: 10px; margin-bottom: 10px; margin-right: 10px;">
             <div class="panel panel-default" id="mainFramePanel">
                 <div class="panel-heading">
@@ -158,9 +155,8 @@
                     </div>
                     <div id="flightBookForm" style="display: none; margin: 15px;">
                         <form id="searchForm">
-                            <br />
                             <div class="panel panel-default" id="flightOrderPanel">
-                                <div class="panel-body">
+                                <div class="panel-body" id="flightFormRow">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <fieldset>
