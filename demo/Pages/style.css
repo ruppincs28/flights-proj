@@ -2,6 +2,18 @@
     width: 70%;
 }
 
+.bs-example:after {
+    content: "Example";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #bbb;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 /* Space out content a bit */
 body {
     padding-top: 20px;
@@ -64,9 +76,13 @@ button:not(.btn-default) {
     margin-left: 10px;
 }
 
-form {
-    border: 1px solid black;
+#flightOrderPanel {
+    width: 45%;
 }
+
+/*form {
+    border: 1px solid black;
+}*/
 
 /*td {
             border: 1px solid black;
@@ -112,7 +128,7 @@ input[type=text], input[type=password], #discountStartDate, #discountEndDate {
     border-radius: 3px;
 }
 
-label {
+label:not(.fieldsetLabel) {
     margin: 7px;
     display: block;
 }

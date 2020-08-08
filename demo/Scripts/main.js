@@ -33,6 +33,8 @@ $(document).ready(function () {
 
     // interface show/hide handling
     $("#searchBookFlights").click(() => {
+        $("#mainFramePanel").attr('class', 'panel panel-primary');
+        $("#mainFrameTitle").html("Flight Booking");
         $("#mainFrame").show();
         $("#adminLoginForm").hide();
         $("#adminPanel").hide();
@@ -40,6 +42,8 @@ $(document).ready(function () {
     });
     $("#orderInterfaceBTN").click(() => {
         $("#flightBookForm").hide();
+        $("#mainFramePanel").attr('class', 'panel panel-warning');
+        $("#mainFrameTitle").html("Admin Interface");
         $("#mainFrame").show();
         if ('adminLoggedIn' in localStorage) {
             $("#adminLoginForm").hide();
