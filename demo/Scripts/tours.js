@@ -105,7 +105,7 @@ $(document).ready(function () {
 
     // login submit
     $("#loginForm").submit(login);
-    $("#registerForm").submit(login);
+    $("#registerForm").submit(register);
 
     $("#discountCancelBTN").on("click", function () {
         discount = null;
@@ -247,10 +247,10 @@ function login() {
 }
 
 
-function login() {
+function register() {
     // handle register logic
     let qstring = "../api/register?company=" + $("#companyUsername").val() + "&password=" + $("#companyPassword").val();
-    ajaxCall("GET", qstring, "", loginSuccess, loginErr);
+    ajaxCall("GET", qstring, "", registerSuccess, registerErr);
     return false; // preventDefault
 }
 
@@ -554,27 +554,4 @@ function getMaxConnection(route) {
         lengthMaxConnection: maxTimeSpentInCountry / 60,
         maxConnectionObj: maxConnection
     };
-}
-
-
-function discountCheck(numstops, from, to, airline, price, fromDate, toDate) {
-    // returns false if no discount, otherwise returns the updated price
-    if (numstops !== 0) {
-        return false;
-    }
-
-    let discountsArr = JSON.parse(localStorage["discountsUpdated"]);
-
-    for (var i = 0; i < discountsArr.length; i++) {
-        let currentDiscount = discountsArr[i];
-        if (from === currentDiscount.From && to === currentDiscount.To && airline === currentDiscount.Airline) {
-            if (isInBetween(currentDiscount.StartDate, currentDiscount.EndDate, fromDate)
-                && isInBetween(currentDiscount.StartDate, currentDiscount.EndDate, toDate)) {
-                let discountRate = parseInt(currentDiscount.DiscountRate.replace("%", ""));
-                return parseInt(parseFloat(price) * (1 - (discountRate / 100)));
-            }
-
-        }
-    }
-    return false;
 }
