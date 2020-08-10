@@ -212,6 +212,7 @@
     <Content Include="Pages\logo.png" />
     <Content Include="Pages\style.css" />
     <Content Include="Pages\testing_html_patterns.html" />
+    <Content Include="Pages\tours.html" />
     <Content Include="Scripts\ajaxCalls.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -254,6 +255,7 @@
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\dateTimeHelpers.js" />
+    <Content Include="Scripts\tours.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
