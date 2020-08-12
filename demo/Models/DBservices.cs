@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data.SqlClient;
 using System.Web.Configuration;
 using System.Data;
@@ -35,6 +33,7 @@ public class DBservices
         return con;
     }
 
+    #region Airports
     //--------------------------------------------------------------------------------------------------
     // This method inserts a car to the cars table 
     //--------------------------------------------------------------------------------------------------
@@ -80,6 +79,30 @@ public class DBservices
 
     }
 
+    //--------------------------------------------------------------------
+    // Build the Insert airport command String
+    //--------------------------------------------------------------------
+    private String BuildInsertCommand(List<Airport> airports)
+    {
+        String command = "";
+
+        String prefix = "INSERT INTO Airports_Final_CS " + "(id, name, lng, lat, city, country) ";
+
+        foreach (Airport airport in airports)
+        {
+            StringBuilder sb = new StringBuilder();
+            // use a string builder to create the dynamic string
+            sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}')",
+                airport.Id.Replace("'", "''"), airport.Name.Replace("'", "''"),
+                airport.Lng, airport.Lat, airport.City.Replace("'", "''"), airport.Country.Replace("'", "''"));
+            command += " " + prefix + sb.ToString();
+        }
+
+        return command;
+    }
+    #endregion
+
+    #region Airlines
 
     public int insert(List<Airline> airlines)
     {
@@ -122,6 +145,30 @@ public class DBservices
         }
 
     }
+
+    private String BuildInsertCommand(List<Airline> airlines)
+    {
+        String command = "";
+
+        String prefix = "INSERT INTO Airlines_Final_CS " + "(id, name) ";
+
+        foreach (Airline airline in airlines)
+        {
+            StringBuilder sb = new StringBuilder();
+            // use a string builder to create the dynamic string
+            sb.AppendFormat("Values(N'{0}', N'{1}')",
+                airline.Id.Replace("'", "''"), airline.Name.Replace("'", "''"));
+            command += " " + prefix + sb.ToString();
+        }
+
+        return command;
+    }
+
+    #endregion
+
+    #region Flights
+
+    
 
 
     public int insert(Flight flight)
@@ -166,223 +213,6 @@ public class DBservices
         }
     }
 
-
-    public int insert(List<Leg> legArr)
-    {
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildInsertCommand(legArr);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-    }
-
-
-    public int insert(Discount discount)
-    {
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildInsertCommand(discount);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-
-    }
-
-
-    public int insert(Company company)
-    {
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildInsertCommand(company);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-
-    }
-
-
-    public int remove(string prefix)
-    {
-
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildRemoveCommand(prefix);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-
-    }
-
-    //--------------------------------------------------------------------
-    // Build the Insert command String
-    //--------------------------------------------------------------------
-    private String BuildInsertCommand(List<Airport> airports)
-    {
-        String command = "";
-
-        String prefix = "INSERT INTO Airports_Final_CS " + "(id, name, lng, lat, city, country) ";
-
-        foreach (Airport airport in airports)
-        {
-            StringBuilder sb = new StringBuilder();
-            // use a string builder to create the dynamic string
-            sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}')",
-                airport.Id.Replace("'", "''"), airport.Name.Replace("'", "''"),
-                    airport.Lng, airport.Lat, airport.City.Replace("'", "''"), airport.Country.Replace("'", "''"));
-            command += " " + prefix + sb.ToString();
-        }
-
-        return command;
-    }
-
-
-    private String BuildInsertCommand(List<Airline> airlines)
-    {
-        String command = "";
-
-        String prefix = "INSERT INTO Airlines_Final_CS " + "(id, name) ";
-
-        foreach (Airline airline in airlines)
-        {
-            StringBuilder sb = new StringBuilder();
-            // use a string builder to create the dynamic string
-            sb.AppendFormat("Values(N'{0}', N'{1}')",
-                airline.Id.Replace("'", "''"), airline.Name.Replace("'", "''"));
-            command += " " + prefix + sb.ToString();
-        }
-
-        return command;
-    }
-
-
     private String BuildInsertCommand(Flight flight)
     {
         String command;
@@ -391,192 +221,12 @@ public class DBservices
         // use a string builder to create the dynamic string
         sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}', N'{6}', N'{7}', N'{8}', N'{9}', N'{10}', N'{11}')",
             flight.Id.Replace("'", "''"), flight.CodeFrom.Replace("'", "''"), flight.CodeTo.Replace("'", "''"), flight.DepartureTime,
-            flight.ArrivalTime, flight.FlyDuration.Replace("'", "''"), flight.Price, flight.NumStops.Replace("'", "''"), 
+            flight.ArrivalTime, flight.FlyDuration.Replace("'", "''"), flight.Price, flight.NumStops.Replace("'", "''"),
             flight.OrderDate, flight.Passengers, flight.Email, flight.Stops);
         String prefix = "INSERT INTO Flights_Ex3_Final_CS " + "(id, [from], [to], departuretime, arrivaltime, flyduration, price, numstops, orderdate, passengers, email, stops) ";
         command = prefix + sb.ToString();
 
         return command;
-    }
-
-
-    private String BuildInsertCommand(List<Leg> legArr)
-    {
-        String command = "";
-
-        String legPrefix = "INSERT INTO Legs_Ex3_Final_CS " + "(id, tripid, legnum, flightno, [from], [to], airlinecode, departuretime, arrivaltime, flyduration) ";
-
-        // build insert legs command
-        foreach (Leg leg in legArr)
-        {
-            StringBuilder sbLegs = new StringBuilder();
-            sbLegs.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}', N'{6}', N'{7}', N'{8}', N'{9}')",
-                leg.Id.Replace("'", "''"), leg.TripId.Replace("'", "''"), leg.LegNum, leg.FlightNo.Replace("'", "''"),
-                    leg.CodeFrom.Replace("'", "''"), leg.CodeTo.Replace("'", "''"), leg.AirlineCode.Replace("'", "''"),
-                        leg.DepartureTime, leg.ArrivalTime, leg.FlyDuration.Replace("'", "''"));
-            command += " " + legPrefix + sbLegs.ToString();
-        }
-
-        return command;
-    }
-
-
-    private String BuildInsertCommand(Discount discount)
-    {
-        String command;
-
-        StringBuilder sb = new StringBuilder();
-        // use a string builder to create the dynamic string
-        sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}')",
-            discount.Airline.Replace("'", "''"), discount.From.Replace("'", "''"), discount.To.Replace("'", "''"), 
-                discount.StartDate, discount.EndDate, discount.DiscountRate);
-        String prefix = "INSERT INTO discounts_final_cs " + "(airline, [from], [to], startdate, enddate, discountrate) ";
-        command = prefix + sb.ToString();
-
-        return command;
-    }
-
-
-    private String BuildInsertCommand(Company company)
-    {
-        String command;
-
-        StringBuilder sb = new StringBuilder();
-        // use a string builder to create the dynamic string
-        sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}')", company.Username, company.Password, company.Image);
-        String prefix = "INSERT INTO companies_final_cs " + "([username], [password], [image]) ";
-        command = prefix + sb.ToString();
-
-        return command;
-    }
-
-
-    public Admin getAdmin(string username)
-    {
-        SqlConnection con = null;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
-
-            String selectSTR = "SELECT * FROM admins_final_cs where username = '" + username + "'";
-            SqlCommand cmd = new SqlCommand(selectSTR, con);
-
-            // get a reader
-            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
-
-            // init Admin instance
-            Admin a = new Admin();
-
-            while (dr.Read())
-            {   // Read till the end of the data into a row
-                a.Username = (string)dr["username"];
-                a.Password = (string)dr["password"];
-            }
-            
-            return a.Username == username ? a : null;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                con.Close();
-            }
-        }
-    }
-
-
-    public Company getCompany(string username)
-    {
-        SqlConnection con = null;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
-
-            String selectSTR = "SELECT * FROM companies_final_cs where username = '" + username + "'";
-            SqlCommand cmd = new SqlCommand(selectSTR, con);
-
-            // get a reader
-            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
-
-            // init Admin instance
-            Company c = new Company();
-
-            while (dr.Read())
-            {   // Read till the end of the data into a row
-                c.Username = (string)dr["username"];
-                c.Password = (string)dr["password"];
-                c.Image = (string)dr["image"];
-            }
-
-            return c.Username == username ? c : null;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                con.Close();
-            }
-        }
-    }
-
-
-    public List<Discount> getDiscounts()
-    {
-        List<Discount> discountList = new List<Discount>();
-        SqlConnection con = null;
-
-        try
-        {
-            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
-
-            String selectSTR = "SELECT * FROM discounts_final_cs";
-            SqlCommand cmd = new SqlCommand(selectSTR, con);
-
-            // get a reader
-            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
-
-            while (dr.Read())
-            {   // Read till the end of the data into a row
-                Discount d = new Discount();
-
-                d.Id = (int)dr["Id"];
-                d.Airline = (string)dr["Airline"];
-                d.From = (string)dr["From"];
-                d.To = (string)dr["To"];
-                d.StartDate = ((DateTime)dr["Startdate"]).Date;
-                d.EndDate = ((DateTime)dr["Enddate"]).Date;
-                d.DiscountRate = (string)dr["Discountrate"];
-
-                discountList.Add(d);
-            }
-
-            return discountList;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                con.Close();
-            }
-
-        }
     }
 
     public List<Flight> getFlights()
@@ -630,6 +280,326 @@ public class DBservices
         }
     }
 
+    #endregion
+
+    #region Legs
+
+    public int insert(List<Leg> legArr)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommand(legArr);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private String BuildInsertCommand(List<Leg> legArr)
+    {
+        String command = "";
+
+        String legPrefix = "INSERT INTO Legs_Ex3_Final_CS " + "(id, tripid, legnum, flightno, [from], [to], airlinecode, departuretime, arrivaltime, flyduration) ";
+
+        // build insert legs command
+        foreach (Leg leg in legArr)
+        {
+            StringBuilder sbLegs = new StringBuilder();
+            sbLegs.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}', N'{6}', N'{7}', N'{8}', N'{9}')",
+                leg.Id.Replace("'", "''"), leg.TripId.Replace("'", "''"), leg.LegNum, leg.FlightNo.Replace("'", "''"),
+                leg.CodeFrom.Replace("'", "''"), leg.CodeTo.Replace("'", "''"), leg.AirlineCode.Replace("'", "''"),
+                leg.DepartureTime, leg.ArrivalTime, leg.FlyDuration.Replace("'", "''"));
+            command += " " + legPrefix + sbLegs.ToString();
+        }
+
+        return command;
+    }
+
+    #endregion
+
+    #region Company
+
+    public int insert(Company company)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommand(company);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
+
+    private String BuildInsertCommand(Company company)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}')", company.Username, company.Password, company.Image);
+        String prefix = "INSERT INTO companies_final_cs " + "([username], [password], [image]) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public Company getCompany(string username)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM companies_final_cs where username = '" + username + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            // init Admin instance
+            Company c = new Company();
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                c.Username = (string)dr["username"];
+                c.Password = (string)dr["password"];
+                c.Image = (string)dr["image"];
+            }
+
+            return c.Username == username ? c : null;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+        }
+    }
+    #endregion
+
+    #region Admin
+
+    public Admin getAdmin(string username)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM admins_final_cs where username = '" + username + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            // init Admin instance
+            Admin a = new Admin();
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                a.Username = (string)dr["username"];
+                a.Password = (string)dr["password"];
+            }
+
+            return a.Username == username ? a : null;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+        }
+    }
+
+    #endregion
+
+    // ToDo Remove when project is done
+    public int insert(Discount discount)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommand(discount);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
+
+
+
+    private String BuildInsertCommand(Discount discount)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}')",
+            discount.Airline.Replace("'", "''"), discount.From.Replace("'", "''"), discount.To.Replace("'", "''"), 
+                discount.StartDate, discount.EndDate, discount.DiscountRate);
+        String prefix = "INSERT INTO discounts_final_cs " + "(airline, [from], [to], startdate, enddate, discountrate) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public List<Discount> getDiscounts()
+    {
+        List<Discount> discountList = new List<Discount>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM discounts_final_cs";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Discount d = new Discount();
+
+                d.Id = (int)dr["Id"];
+                d.Airline = (string)dr["Airline"];
+                d.From = (string)dr["From"];
+                d.To = (string)dr["To"];
+                d.StartDate = ((DateTime)dr["Startdate"]).Date;
+                d.EndDate = ((DateTime)dr["Enddate"]).Date;
+                d.DiscountRate = (string)dr["Discountrate"];
+
+                discountList.Add(d);
+            }
+
+            return discountList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+
+
     //---------------------------------------------------------------------------------
     // Read Discount using a DataSet
     //---------------------------------------------------------------------------------
@@ -663,6 +633,48 @@ public class DBservices
         return this;
     }
 
+    public int remove(string prefix)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildRemoveCommand(prefix);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
 
     private String BuildRemoveCommand(string prefix)
     {
