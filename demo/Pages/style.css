@@ -82,7 +82,10 @@ button:not(.btn-default) {
 }
 
 #flightOrderPanel {
-    width: 30%;
+    min-width: 455px;
+    min-height: 215px;
+    max-width: 455px;
+    max-height: 215px;
 }
 
 /*form {
@@ -143,4 +146,8 @@ label:not(.fieldsetLabel) {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    min-width: 455px;
+    min-height: 215px;
+    max-width: 455px;
+    max-height: 215px;
 }
