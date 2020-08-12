@@ -183,6 +183,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AdminsController.cs" />
+    <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\DiscountsController.cs" />
     <Compile Include="Controllers\FlightsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Airline.cs" />
     <Compile Include="Models\Airport.cs" />
+    <Compile Include="Models\Company.cs" />
     <Compile Include="Models\DBservices.cs" />
     <Compile Include="Models\Discount.cs" />
     <Compile Include="Models\Flight.cs" />

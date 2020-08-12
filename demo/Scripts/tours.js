@@ -7,9 +7,8 @@ $(document).ready(function () {
         $("#mainContainer").prepend('<div class="header clearfix" id="tabsNav" style="display: none;">' +
             '            <nav>' +
             '                <ul class="nav nav-pills pull-right">' +
-            '                    <li role="presentation" class="active"><a href="#" onclick="location.reload();">Home</a></li>' +
+            '                    <li role="presentation" class="active"><a id="orderInterfaceBTN" href="#"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Login</a></li>' +
             '                    <li role="presentation"><a id="registerCompany" href="#">Register new Tour Company</a></li>' +
-            '                    <li role="presentation"><a id="orderInterfaceBTN" href="#">Login</a></li>' +
             '                </ul>' +
             '            </nav>' +
             '            <h3 class="text-muted"><img id="logo" src="logo.png" /></h3>' +
@@ -18,12 +17,12 @@ $(document).ready(function () {
         $("#mainContainer").prepend('<div class="header clearfix" id="tabsNav" style="display: none;">' +
             '            <nav>' +
             '                <ul class="nav nav-pills pull-right">' +
-            '                    <li role="presentation" class="active"><a href="#" onclick="location.reload();">Home</a></li>' +
+            '                    <li role="presentation" class="active"><a href="#" onclick="localStorage.clear(); location.reload();"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>' +
             '                    <li role="presentation"><a id="searchBookFlights" href="#">Order tour packages</a></li>' +
             '                    <li role="presentation"><a id="orderInterfaceBTN" href="#">Admin interface</a></li>' +
             '                </ul>' +
             '            </nav>' +
-            '            <h3 class="text-muted"><img id="logo" src="logo.png" /></h3>' +
+            '            <h3 class="text-muted"><img id="logo" src="' + localStorage["tourCompanyImageURL"] + '" /></h3>' +
             '        </div>');
     }
     // main navbar dynamic render
@@ -241,7 +240,7 @@ function discountErr(err) {
 
 function login() {
     // handle login logic
-    let qstring = "../api/admins?username=" + $("#username").val() + "&password=" + $("#password").val();
+    let qstring = "../api/companies?username=" + $("#username").val() + "&password=" + $("#password").val();
     ajaxCall("GET", qstring, "", loginSuccess, loginErr);
     return false; // preventDefault
 }
@@ -249,17 +248,21 @@ function login() {
 
 function register() {
     // handle register logic
-    let qstring = "../api/register?company=" + $("#companyUsername").val() + "&password=" + $("#companyPassword").val();
-    ajaxCall("GET", qstring, "", registerSuccess, registerErr);
+    let qstring = "../api/companies"
+    ajaxCall("POST", qstring, JSON.stringify({ Username: $("#companyUsername").val(), 
+        Password: $("#companyPassword").val(), Image: $("#companyImage").val() }),
+        registerSuccess, registerErr);
     return false; // preventDefault
 }
 
 
 function loginSuccess(data) {
-    if (data === "Validated") {
-        localStorage['adminLoggedIn'] = "loggedIn";
-        swal("logged in successfully!", "Great Job", "success");
-        $('#orderInterfaceBTN').trigger('click');
+    let [validated, companyName, imageURL] = data.split("`");
+    if (validated === "Validated") {
+        localStorage['hasTourCompany'] = companyName;
+        localStorage['tourCompanyImageURL'] = imageURL;
+        swal("logged in successfully as company: " + companyName, "Great Job", "success");
+        location.reload();
     }
     else {
         swal("wrong credentials");
@@ -273,13 +276,12 @@ function loginErr() {
 
 
 function registerSuccess(data) {
-    if (data === "Validated") {
-        localStorage['hasTourCompany'] = "registered";
-        swal("logged in successfully!", "Great Job", "success");
-        $('#orderInterfaceBTN').trigger('click');
+    let [validated, companyName, imageURL] = data.split("`");
+    if (validated === "Validated") {
+        loginSuccess(data);
     }
     else {
-        swal("wrong credentials");
+        swal("company already exists");
     }
 }
 

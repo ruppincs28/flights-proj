@@ -254,6 +254,50 @@ public class DBservices
     }
 
 
+    public int insert(Company company)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommand(company);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
+
+
     public int remove(string prefix)
     {
 
@@ -393,6 +437,20 @@ public class DBservices
     }
 
 
+    private String BuildInsertCommand(Company company)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}')", company.Username, company.Password, company.Image);
+        String prefix = "INSERT INTO companies_final_cs " + "([username], [password], [image]) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+
     public Admin getAdmin(string username)
     {
         SqlConnection con = null;
@@ -417,6 +475,47 @@ public class DBservices
             }
             
             return a.Username == username ? a : null;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+        }
+    }
+
+
+    public Company getCompany(string username)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM companies_final_cs where username = '" + username + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            // init Admin instance
+            Company c = new Company();
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                c.Username = (string)dr["username"];
+                c.Password = (string)dr["password"];
+                c.Image = (string)dr["image"];
+            }
+
+            return c.Username == username ? c : null;
         }
         catch (Exception ex)
         {
