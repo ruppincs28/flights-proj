@@ -82,14 +82,14 @@ button:not(.btn-default) {
 }
 
 #flightOrderPanel {
-    min-width: 455px;
-    min-height: 215px;
-    max-width: 455px;
-    max-height: 215px;
+    min-width: 485px;
+    min-height: 265px;
+    max-width: 485px;
+    max-height: 265px;
 }
 
 #arrivalTime, #departureTime {
-    width: 75%;
+    width: 85%;
 }
 
 /*form {
@@ -148,10 +148,10 @@ label:not(.fieldsetLabel) {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    min-width: 455px;
-    min-height: 215px;
-    max-width: 455px;
-    max-height: 215px;
+    min-width: 485px;
+    min-height: 265px;
+    max-width: 485px;
+    max-height: 265px;
 }
 
 #packageFormRow {
@@ -159,9 +159,9 @@ label:not(.fieldsetLabel) {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    min-width: 455px;
-    min-height: 215px;
-    max-width: 455px;
-    max-height: 215px;
+    min-width: 485px;
+    min-height: 265px;
+    max-width: 485px;
+    max-height: 265px;
 }
 
