@@ -130,7 +130,7 @@ button:not(.btn-default) {
     font-size: 17px;
 }
 
-input[type=text]:not(#arrivalTime, #departureTime), input[type=password], #discountStartDate, #discountEndDate {
+input[type=text]:not(#arrivalTime):not(#departureTime), input[type=password], #discountStartDate, #discountEndDate {
     width: 40%;
     margin: 15px;
     padding: 12px;
