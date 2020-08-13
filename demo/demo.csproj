@@ -210,12 +210,14 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\css\bootstrap-clockpicker.min.css" />
     <Content Include="Pages\flights.html" />
     <Content Include="Pages\logo.png" />
-    <Content Include="Pages\style.css" />
+    <Content Include="Pages\css\style.css" />
     <Content Include="Pages\testing_html_patterns.html" />
     <Content Include="Pages\tours.html" />
     <Content Include="Scripts\ajaxCalls.js" />
+    <Content Include="Scripts\bootstrap-clockpicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />

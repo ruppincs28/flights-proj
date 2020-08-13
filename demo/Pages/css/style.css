@@ -88,14 +88,16 @@ button:not(.btn-default) {
     max-height: 215px;
 }
 
+#arrivalTime, #departureTime {
+    width: 75%;
+}
+
 /*form {
     border: 1px solid black;
 }*/
-
 /*td {
             border: 1px solid black;
         }*/
-
 #noBorder {
     border: 0px;
 }
@@ -128,7 +130,7 @@ button:not(.btn-default) {
     font-size: 17px;
 }
 
-input[type=text], input[type=password], #discountStartDate, #discountEndDate {
+input[type=text]:not(#arrivalTime, #departureTime), input[type=password], #discountStartDate, #discountEndDate {
     width: 40%;
     margin: 15px;
     padding: 12px;
@@ -142,7 +144,7 @@ label:not(.fieldsetLabel) {
 }
 
 #flightFormRow {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%), url("formBackground.jpg");
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%), url("../formBackground.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -151,3 +153,15 @@ label:not(.fieldsetLabel) {
     max-width: 455px;
     max-height: 215px;
 }
+
+#packageFormRow {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.45) 100%), url("../packageFormBackground.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    min-width: 455px;
+    min-height: 215px;
+    max-width: 455px;
+    max-height: 215px;
+}
+

@@ -12,15 +12,17 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-clockpicker.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="../Scripts/bootstrap-clockpicker.min.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
     <script src="../Scripts/dateTimeHelpers.js"></script>
     <script src="../Scripts/discountTblActions.js"></script>
     <script src="../Scripts/tours.js"></script>
-    <link href="style.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
     <div class="container" id="mainContainer">
@@ -42,7 +44,7 @@
                     <h3 class="panel-title" id="mainFrameTitle">Main Frame Title</h3>
                 </div>
                 <div class="panel-body">
-                    <div id="adminLoginForm" style="display: none; margin: 15px;">
+                    <!--<div id="adminLoginForm" style="display: none; margin: 15px;">
                         <form id="loginForm">
                             <div style="margin: 15px;">
                                 <label for="username"><b>Username:</b></label>
@@ -53,7 +55,7 @@
                                 <button id="submitLogin" class="orderBTN" type="submit">Login</button>
                             </div>
                         </form>
-                    </div>
+                    </div>-->
                     <div id="registerCompanyForm" style="display: none; margin: 15px;">
                         <form id="registerForm">
                             <div style="margin: 15px;">
@@ -163,26 +165,19 @@
                     <div id="flightBookForm" style="display: none; margin: 15px;">
                         <form id="searchForm">
                             <div class="panel panel-default" id="flightOrderPanel">
-                                <div class="panel-body" id="flightFormRow">
+                                <div class="panel-body" id="packageFormRow">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <fieldset>
-                                                <label class="fieldsetLabel" for="sources">Fly From:</label>
+                                                <label class="fieldsetLabel" for="sources">Destination City:</label>
                                                 <input name="sources" list="sources" required />
                                                 <datalist id="sources"></datalist>
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-6">
-                                            <fieldset>
-                                                <label class="fieldsetLabel" for="destinations">Fly To:</label>
-                                                <input name="destinations" list="destinations" required />
-                                                <datalist id="destinations"></datalist>
-                                            </fieldset>
-                                        </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <fieldset>
                                                 <br />
-                                                <label class="fieldsetLabel" for="departure">Start date:</label>
+                                                <label class="fieldsetLabel" for="departure">Date:</label>
                                                 <input type="date"
                                                        id="startDATE"
                                                        name="departure"
@@ -190,18 +185,23 @@
                                                        required />
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <fieldset>
                                                 <br />
-                                                <label class="fieldsetLabel" for="return">End date:</label>
-                                                <input type="date"
-                                                       id="endDATE"
-                                                       name="return"
-                                                       min=""
-                                                       required />
+                                                <div class="input-group clockpicker">
+                                                    <fieldset>
+                                                        <input id="arrivalTime" name="arrivalTime" type="text" class="form-control" placeholder="Arrival">
+                                                    </fieldset>
+                                                </div>
+                                                <br />
+                                                <div class="input-group clockpicker">
+                                                    <fieldset>
+                                                        <input id="departureTime" name="departureTime" type="text" class="form-control" placeholder="Departure">
+                                                    </fieldset>
+                                                </div>
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <fieldset>
                                                 <br />
                                                 <input class="btn btn-primary" type="submit" id="searchBTN" value="Search" />

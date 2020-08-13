@@ -1,5 +1,16 @@
 ﻿var codesUrl = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name";
 var airlineCodesUrl = "https://api.skypicker.com/airlines?";
+var labelsPriceDict = {
+    eatingout: 20,
+    do: 15,
+    hotels: 100,
+    nightlife: 15,
+    sightseeing: 10,
+    tours: 30
+};
+var defaultPoiPrice = 5;
+var priceOfPoiToReturn = 0;
+var transportationPrice = 10;
 var triposoCreds = "account=MLMIQSMM&token=0dxs7hkxphxfvovs2xmxk2vourmpbxmp";
 $(document).ready(function () {
     // main navbar dynamic render
@@ -26,7 +37,7 @@ $(document).ready(function () {
             '        </div>');
     }
     // main navbar dynamic render
-    
+
     // populate datalist with data
     if (!('locationCodes' in localStorage)) {
         $.get(codesUrl).done((data) => {
@@ -54,12 +65,18 @@ $(document).ready(function () {
     $.get(triposoQueryURL).fail((err) => {
         console.log(err);
     });
-    //ajaxCall("GET", getQueryURLTriposo("Amsterdam", "2020-09-7", "2020-09-9", "4:19", "17:19"), "", (data) => console.log(data), discountErr); // load discounts from server for user search
+
+    // clock
+    $('.clockpicker').clockpicker({
+        placement: 'top',
+        align: 'left',
+        donetext: 'Done'
+    });
 
     // interface show/hide handling
     $("#searchBookFlights").click(() => {
-        $("#mainFramePanel").attr('class', 'panel panel-primary');
-        $("#mainFrameTitle").html("Flight Booking");
+        $("#mainFramePanel").attr('class', 'panel panel-info');
+        $("#mainFrameTitle").html("Order Packages");
         $("#mainFrame").show();
         $("#adminLoginForm").hide();
         $("#adminPanel").hide();
@@ -69,7 +86,7 @@ $(document).ready(function () {
         $("#flightBookForm").hide();
         $("#registerCompanyForm").hide();
         $("#mainFramePanel").attr('class', 'panel panel-warning');
-        $("#mainFrameTitle").html("Admin Interface");
+        $("#mainFrameTitle").html("Package Management Interface");
         $("#mainFrame").show();
         if ('adminLoggedIn' in localStorage) {
             $("#adminLoginForm").hide();
@@ -249,8 +266,10 @@ function login() {
 function register() {
     // handle register logic
     let qstring = "../api/companies"
-    ajaxCall("POST", qstring, JSON.stringify({ Username: $("#companyUsername").val(), 
-        Password: $("#companyPassword").val(), Image: $("#companyImage").val() }),
+    ajaxCall("POST", qstring, JSON.stringify({
+        Username: $("#companyUsername").val(),
+        Password: $("#companyPassword").val(), Image: $("#companyImage").val()
+    }),
         registerSuccess, registerErr);
     return false; // preventDefault
 }
@@ -294,7 +313,7 @@ function registerErr() {
 function validateInDataList() {
     let parsedArr = JSON.parse(localStorage['locationCodes'])
 
-    if (typeof parsedArr.find(x => x.name === $(this).val()) === "undefined") {
+    if (typeof parsedArr.find(x => x.city.name === $(this).val()) === "undefined") {
         this.validity.valid = false;
         this.setCustomValidity('Value not from list');
     }
@@ -307,9 +326,9 @@ function validateInDataList() {
 
 function populateDataList(codesArr) {
     for (var i = 0; i < codesArr.length; i++) {
-        let code = codesArr[i].code;
-        let name = codesArr[i].name;
-        $("datalist").append('<option label="' + code + '"' + ' value="' + name + '">');
+        let code = codesArr[i].city.name;
+        let name = codesArr[i].city.country.name;
+        $("datalist").append('<option label="' + name + '"' + ' value="' + code + '">');
     }
 }
 
@@ -328,14 +347,15 @@ function handleSearch() {
     let to = $('#destinations [value="' + toVal + '"]').attr('label');
     let start = $("#startDATE").val();
     let end = $("#endDATE").val();
-    let url = getQueryURL(from, to, reverseDate(start), reverseDate(end))
-    ajaxCall("GET", url, "", handleSearchSuccess, handleSearchError);
+    let triposoQueryURL = getQueryURLTriposo("Amsterdam", start, start, "15:12", "19:19");
+    $.get(triposoQueryURL).done(handleSearchSuccess);
+    $.get(triposoQueryURL).fail(handleSearchError);
     return false;
 }
 
 
 function handleSearchSuccess(data) {
-    dataArr = data.data
+    dataArr = data.results[0].days[0]
     if (dataArr.length === 0) {
         $("#tablePH").empty()
         $("#tablePH").append(
@@ -343,96 +363,60 @@ function handleSearchSuccess(data) {
         )
         return;
     }
+    let sumPackage = 0;
+    dataArr = dataArr.itinerary_items
+    cityPic = data.results[0].location.images[0].source_url;
     for (var i = 0; i < dataArr.length; i++) {
         if (i === 0) {
             $("#tablePH").empty()
             $("#tablePH").append(
                 '<br><div class="col-lg-12">' +
-                '        <div class="panel panel-default">' +
-                '            <div class="panel-heading">' +
-                '                <h3>Search Query Results</h3>' +
-                '            </div>' + '<div class="panel-body">' +
-                '<table class="table table-condensed" style="border-collapse:collapse;">' +
-                '                    <thead>' +
-                '                        <tr>' +
-                '                            <th>&nbsp;</th>' +
-                '                            <th>Price</th>' +
-                '                            <th>Departure time</th>' +
-                '                            <th>Arrival time</th>' +
-                '                            <th>From</th>' +
-                '                            <th>To</th>' +
-                '                            <th>Stops</th>' +
-                '                            <th>Airline name</th>' +
-                '                            <th>Store in DB</th>' +
-                '                        </tr>' +
-                '                    </thead>' +
-                '                    <tbody id="resultPH"></tbody></table></div></div></div>'
+                '        <div class="panel panel-default" id="plannerPanel">'
+                + '<div class="panel-body" id="plannerPanelBody"></div></div></div>'
             );
+            $("#plannerPanelBody").append('<h3 id="planTitle">' + data.results[0].location.id + '</h3>' +
+                '<h4 id="planDate">' + $("#startDATE").val() + '</h4>');
         }
-        let currentItem = dataArr[i]
-        let flightId = currentItem.id
-        let price = currentItem.conversion.EUR + ' €'
-        let departureTime = convertToHumanTime(currentItem.dTime)
-        let arrivalTime = convertToHumanTime(currentItem.aTime)
-        let from = currentItem.cityFrom + ', ' + currentItem.countryFrom.name
-        let codeFrom = currentItem.flyFrom
-        let to = currentItem.cityTo + ', ' + currentItem.countryTo.name
-        let codeTo = currentItem.flyTo
-        let flyDuration = currentItem.fly_duration
-        var stops = ''
-        let airline = currentItem.route[0].airline
-        for (var j = 0; j < currentItem.route.length; j++) {
-            if (currentItem.route.length === 1) {
-                break;
+        let currentItem = dataArr[i];
+        let poiQueryURL = getPoiQueryURLTriposo(currentItem.poi.id);
+        jQuery.ajaxSetup({ async: false });
+        $.get(poiQueryURL).done((data) => {
+            dataAsArr = data.results[0].tag_labels; // labels of current itinerary
+            for (let label in labelsPriceDict) { // dict of prices for common itineraries
+                priceOfPoiToReturn = getItineraryPriceByLabel(label, dataAsArr);
+                if (priceOfPoiToReturn !== 0)
+                    return;
             }
-            currentRoute = currentItem.route[j]
-            stops += currentRoute.cityTo + ', '
-        }
-        if (stops !== '') {
-            let targetCity = to.split(',')[0]
-            stops = stops.replace(targetCity, "")
-            stops = stops.substring(0, stops.length - 4)
-        } else {
-            stops = 'Direct flight'
-        }
-        let numStops = (stops === 'Direct flight') ? 0 : (stops.match(/,/g) || []).length + 1;
-        let route = JSON.stringify(currentItem.route);
-        let newPrice = discountCheck(numStops, codeFrom, codeTo, airline, price, departureTime, arrivalTime);
-        let newPriceStr = (newPrice !== false) ? ('<td id="discounted">' + newPrice + ' €' + '</td>') : ('<td>' + price + '</td>');
-        dataStr = ` data-price="${newPrice ? newPrice : price}" \
-                                                data-departuretime="${departureTime}" \
-                                                data-flightid="${flightId}" \
-                                                data-arrivaltime="${arrivalTime}" \
-                                                data-from="${from}" \
-                                                data-codefrom="${codeFrom}" \
-                                                data-codeto="${codeTo}" \
-                                                data-to="${to}" \
-                                                data-route='${route}' \
-                                                data-stops="${stops}" \
-                                                data-numstops="${numStops}" \
-                                                data-flyduration="${flyDuration}" \
-                                                data-airline="${airline}" `
-        let maxConnectionAssArr = getMaxConnection(currentItem.route);
-        let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
-                ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}`
-            : `No connection`;
-        $("#resultPH").append(
-            '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
-            '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
-            '<td>' + price + '</td>' +
-            '<td>' + departureTime + '</td>' +
-            '<td>' + arrivalTime + '</td>' +
-            '<td>' + from + '</td>' +
-            '<td>' + to + '</td>' +
-            '<td>' + stops + '</td>' +
-            '<td>' + airline + '</td>' +
-            '<td>' + '<center><input type="button" class="addButton" value="Order"' + dataStr + '/>' + '</center></td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">' + maxConnectionStr + '</div>' + '</td>' +
-            '</tr>'
-        );
+            priceOfPoiToReturn = defaultPoiPrice;
+        });
+        $.get(poiQueryURL).fail((err) => {
+            console.log(err);
+        });
+        jQuery.ajaxSetup({ async: true });
+        sumPackage += priceOfPoiToReturn;
+        $("#plannerPanelBody").append((currentItem.title ? '<b>' + (capitalize(currentItem.title) + '</b>' + '</br>') : "")
+            + currentItem.poi.name + '</br>' + currentItem.description + '</br>');
+        updatePanelPic(cityPic);
+        //$("#resultPH").append(
+        //    '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
+        //    '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
+        //    '<td>' + price + '</td>' +
+        //    '<td>' + departureTime + '</td>' +
+        //    '<td>' + arrivalTime + '</td>' +
+        //    '<td>' + from + '</td>' +
+        //    '<td>' + to + '</td>' +
+        //    '<td>' + stops + '</td>' +
+        //    '<td>' + airline + '</td>' +
+        //    '<td>' + '<center><input type="button" class="addButton" value="Order"' + dataStr + '/>' + '</center></td>' +
+        //    '</tr>' +
+        //    '<tr>' +
+        //    '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">' + maxConnectionStr + '</div>' + '</td>' +
+        //    '</tr>'
+        //);
     }
+    let totalSum = sumPackage + transportationPrice;
+    let sumStr = sumPackage ? `Package: ${sumPackage}€<br> +<br>Transportation: ${transportationPrice}€<br>Total: ${totalSum}€` : "";
+    $("#plannerPanelBody").append(`<br><b>${sumStr}</b>`);
     $(".addButton").on("click", function () {
         document.getElementById("orderForm").reset();
         let flightId = $(this).data("flightid");
@@ -477,6 +461,24 @@ function handleSearchSuccess(data) {
 }
 
 
+function updatePanelPic(cityPic) {
+    $("#plannerPanel").css('background',
+        'linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.65) 100%), url("' + cityPic + '")');
+    $("#plannerPanel").css('background-size', '100% 100%');
+    $("#plannerPanel").css('background-position', 'center');
+    $("#plannerPanel").css('background-repeat', 'no-repeat');
+}
+
+
+function getItineraryPriceByLabel(suspectedLabel, labelArrOfPoi) {
+    for (var i = 0; i < labelArrOfPoi.length; i++) {
+        if (suspectedLabel === labelArrOfPoi[i]) // suspected label was indeed correct
+            return labelsPriceDict[suspectedLabel];
+    }
+    return 0;
+}
+
+
 function flightPostSuccess() {
     $('#cancelOrder').trigger('click');
     swal("Ordered Successfully!", "Great Job", "success");
@@ -494,8 +496,12 @@ function getQueryURL(from, to, dateFrom, dateTo) {
 
 
 function getQueryURLTriposo(locationId, startDate, endDate, arrivalTime, departureTime) {
-    return `https://www.triposo.com/api/20200803/day_planner.json?location_id=${locationId}&start_date=${startDate}
-                &end_date=${endDate}&arrival_time=${arrivalTime}&departure_time=${departureTime}&${triposoCreds}`
+    return `https://www.triposo.com/api/20200803/day_planner.json?location_id=${locationId}&start_date=${startDate}&end_date=${endDate}&arrival_time=${arrivalTime}&departure_time=${departureTime}&${triposoCreds}`
+}
+
+
+function getPoiQueryURLTriposo(id) {
+    return `https://www.triposo.com/api/20200803/poi.json?id=${id}&fields=tag_labels&${triposoCreds}`
 }
 
 
@@ -556,4 +562,16 @@ function getMaxConnection(route) {
         lengthMaxConnection: maxTimeSpentInCountry / 60,
         maxConnectionObj: maxConnection
     };
+}
+
+
+function capitalize(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+    }
+    // Directly return the joined string
+    return splitStr.join(' ');
 }
