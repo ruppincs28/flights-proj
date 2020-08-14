@@ -366,6 +366,8 @@ function handleSearchSuccess(data) {
     let sumPackage = 0;
     dataArr = dataArr.itinerary_items
     cityPic = data.results[0].location.images[0].source_url;
+    let packageInfoDict = {};
+    let lastTitle;
     for (var i = 0; i < dataArr.length; i++) {
         if (i === 0) {
             $("#tablePH").empty()
@@ -379,6 +381,9 @@ function handleSearchSuccess(data) {
         }
         let currentItem = dataArr[i];
         let poiQueryURL = getPoiQueryURLTriposo(currentItem.poi.id);
+        let title = currentItem.title ? capitalize(currentItem.title) : "";
+        let description = currentItem.description;
+        let poiName = currentItem.poi.name;
         jQuery.ajaxSetup({ async: false });
         $.get(poiQueryURL).done((data) => {
             dataAsArr = data.results[0].tag_labels; // labels of current itinerary
@@ -394,9 +399,16 @@ function handleSearchSuccess(data) {
         });
         jQuery.ajaxSetup({ async: true });
         sumPackage += priceOfPoiToReturn;
-        $("#plannerPanelBody").append((currentItem.title ? '<b>' + (capitalize(currentItem.title) + '</b>' + '</br>') : "")
-            + currentItem.poi.name + '</br>' + currentItem.description + '</br>');
+        if (title !== "") { // load associative array with package info on each iteration
+            packageInfoDict[title] = {};
+            packageInfoDict[title][poiName] = description;
+        } else {
+            packageInfoDict[lastTitle][poiName] = description;
+        }
+        $("#plannerPanelBody").append((title ? '<b>' + (title + '</b>' + '</br>') : "")
+            + poiName + '</br>' + description + '</br>');
         updatePanelPic(cityPic);
+        lastTitle = title;
         //$("#resultPH").append(
         //    '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
         //    '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
@@ -416,47 +428,59 @@ function handleSearchSuccess(data) {
     }
     let totalSum = sumPackage + transportationPrice;
     let sumStr = sumPackage ? `Package: ${sumPackage}€<br> +<br>Transportation: ${transportationPrice}€<br>Total: ${totalSum}€` : "";
-    $("#plannerPanelBody").append(`<br><b>${sumStr}</b>`);
+    console.log(packageInfoDict);
+    let packageInfoStr = JSON.stringify(packageInfoDict);
+    dataStr = ` data-price="${totalSum}" \
+                                                data-longitude="${data.results[0].location.coordinates.longitude}" \
+                                                data-latitude="${data.results[0].location.coordinates.latitude}" \
+                                                data-packageinfo='${packageInfoStr.replace("'", "")}' \
+                                                data-arrivaltime="${$('#arrivalTime').val()}" \
+                                                data-departuretime="${$('#departureTime').val()}" \
+                                                data-date="${$('#startDATE').val()}" `;
+    $("#plannerPanelBody").append(`<br><b>${sumStr}</b><br>`);
+    $("#plannerPanelBody").append('<input type="button" class="addButton btn btn-primary" value="Order"' + dataStr + '/>');
     $(".addButton").on("click", function () {
-        document.getElementById("orderForm").reset();
-        let flightId = $(this).data("flightid");
-        let price = parseFloat($(this).data("price"));
-        let departureTime = $(this).data("departuretime").replace(" ", "T");
-        let arrivalTime = $(this).data("arrivaltime").replace(" ", "T");
-        let from = $(this).data("from");
-        let codeFrom = $(this).data("codefrom");
-        let to = $(this).data("to");
-        let codeTo = $(this).data("codeto");
-        let stops = $(this).data("stops");
-        let airline = $(this).data("airline");
-        let numStops = $(this).data("numstops");
-        let flyDuration = $(this).data("flyduration");
-        let legArr = constructLegs($(this).data("route"), flightId);
-        let orderDate = moment().format("YYYY-MM-DDTHH:mm:ss");
-        $("#tablePH").hide();
-        $("#orderFrame").show();
-        $('#orderForm').unbind('submit').submit(function () {
-            let o = {
-                Id: flightId,
-                Price: price,
-                DepartureTime: departureTime,
-                ArrivalTime: arrivalTime,
-                From: from,
-                CodeFrom: codeFrom,
-                To: to,
-                CodeTo: codeTo,
-                Stops: stops,
-                Airline: airline,
-                NumStops: numStops,
-                FlyDuration: flyDuration,
-                LegArr: legArr,
-                OrderDate: orderDate,
-                Passengers: $("#orderNames").val(),
-                Email: $("#orderEmail").val()
-            }
-            ajaxCall("POST", "../api/flights", JSON.stringify(o), flightPostSuccess, (err) => swal("Error: " + err));
-            return false; // preventDefault
-        });
+        //document.getElementById("orderForm").reset();
+        //let flightId = $(this).data("flightid");
+        //let price = parseFloat($(this).data("price"));
+        //let departureTime = $(this).data("departuretime").replace(" ", "T");
+        //let arrivalTime = $(this).data("arrivaltime").replace(" ", "T");
+        //let from = $(this).data("from");
+        //let codeFrom = $(this).data("codefrom");
+        //let to = $(this).data("to");
+        //let codeTo = $(this).data("codeto");
+        //let stops = $(this).data("stops");
+        //let airline = $(this).data("airline");
+        //let numStops = $(this).data("numstops");
+        //let flyDuration = $(this).data("flyduration");
+        //let legArr = constructLegs($(this).data("route"), flightId);
+        //let orderDate = moment().format("YYYY-MM-DDTHH:mm:ss");
+        //$("#tablePH").hide();
+        //$("#orderFrame").show();
+        //$('#orderForm').unbind('submit').submit(function () {
+        //    let o = {
+        //        Id: flightId,
+        //        Price: price,
+        //        DepartureTime: departureTime,
+        //        ArrivalTime: arrivalTime,
+        //        From: from,
+        //        CodeFrom: codeFrom,
+        //        To: to,
+        //        CodeTo: codeTo,
+        //        Stops: stops,
+        //        Airline: airline,
+        //        NumStops: numStops,
+        //        FlyDuration: flyDuration,
+        //        LegArr: legArr,
+        //        OrderDate: orderDate,
+        //        Passengers: $("#orderNames").val(),
+        //        Email: $("#orderEmail").val()
+        //    }
+        //    ajaxCall("POST", "../api/flights", JSON.stringify(o), flightPostSuccess, (err) => swal("Error: " + err));
+        //    return false; // preventDefault
+        //});
+        console.log($(this).data());
+        return false;
     })
 }
 

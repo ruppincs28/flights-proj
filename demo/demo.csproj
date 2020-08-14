@@ -199,6 +199,7 @@
     <Compile Include="Models\Discount.cs" />
     <Compile Include="Models\Flight.cs" />
     <Compile Include="Models\Leg.cs" />
+    <Compile Include="Models\Package.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
