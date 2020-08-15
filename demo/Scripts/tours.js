@@ -341,13 +341,10 @@ function handleMyFlights() {
 function handleSearch() {
     // value attribute will be used to find airport code
     let fromVal = $('input[name="sources"]').val();
-    let toVal = $('input[name="destinations"]').val();
-
-    let from = $('#sources [value="' + fromVal + '"]').attr('label');
-    let to = $('#destinations [value="' + toVal + '"]').attr('label');
     let start = $("#startDATE").val();
-    let end = $("#endDATE").val();
-    let triposoQueryURL = getQueryURLTriposo("Amsterdam", start, start, "15:12", "19:19");
+    let arrival = $("#arrivalTime").val();
+    let departure = $("#departureTime").val();
+    let triposoQueryURL = getQueryURLTriposo(fromVal, start, start, arrival, departure);
     $.get(triposoQueryURL).done(handleSearchSuccess);
     $.get(triposoQueryURL).fail(handleSearchError);
     return false;
@@ -356,6 +353,7 @@ function handleSearch() {
 
 function handleSearchSuccess(data) {
     dataArr = data.results[0].days[0]
+    
     if (dataArr.length === 0) {
         $("#tablePH").empty()
         $("#tablePH").append(
@@ -368,6 +366,8 @@ function handleSearchSuccess(data) {
     cityPic = data.results[0].location.images[0].source_url;
     let packageInfoDict = {};
     let lastTitle;
+    let city = data.results[0].location.id.replace(/_/g, " ");
+    let startDate = $("#startDATE").val();
     for (var i = 0; i < dataArr.length; i++) {
         if (i === 0) {
             $("#tablePH").empty()
@@ -376,8 +376,8 @@ function handleSearchSuccess(data) {
                 '        <div class="panel panel-default" id="plannerPanel">'
                 + '<div class="panel-body" id="plannerPanelBody"></div></div></div>'
             );
-            $("#plannerPanelBody").append('<h3 id="planTitle">' + data.results[0].location.id + '</h3>' +
-                '<h4 id="planDate">' + $("#startDATE").val() + '</h4>');
+            $("#plannerPanelBody").append('<h3 id="planTitle">' + city + '</h3>' +
+                '<h4 id="planDate">' + startDate + '</h4>');
         }
         let currentItem = dataArr[i];
         let poiQueryURL = getPoiQueryURLTriposo(currentItem.poi.id);
@@ -428,59 +428,49 @@ function handleSearchSuccess(data) {
     }
     let totalSum = sumPackage + transportationPrice;
     let sumStr = sumPackage ? `Package: ${sumPackage}€<br> +<br>Transportation: ${transportationPrice}€<br>Total: ${totalSum}€` : "";
-    console.log(packageInfoDict);
-    let packageInfoStr = JSON.stringify(packageInfoDict);
+    let packageInfoStr = JSON.stringify(packageInfoDict).replace(/'/g, "");
     dataStr = ` data-price="${totalSum}" \
                                                 data-longitude="${data.results[0].location.coordinates.longitude}" \
                                                 data-latitude="${data.results[0].location.coordinates.latitude}" \
-                                                data-packageinfo='${packageInfoStr.replace("'", "")}' \
+                                                data-packageinfo='${packageInfoStr}' \
                                                 data-arrivaltime="${$('#arrivalTime').val()}" \
                                                 data-departuretime="${$('#departureTime').val()}" \
-                                                data-date="${$('#startDATE').val()}" `;
+                                                data-city="${city}" \
+                                                data-date="${startDate}" `;
     $("#plannerPanelBody").append(`<br><b>${sumStr}</b><br>`);
     $("#plannerPanelBody").append('<input type="button" class="addButton btn btn-primary" value="Order"' + dataStr + '/>');
     $(".addButton").on("click", function () {
-        //document.getElementById("orderForm").reset();
-        //let flightId = $(this).data("flightid");
-        //let price = parseFloat($(this).data("price"));
-        //let departureTime = $(this).data("departuretime").replace(" ", "T");
-        //let arrivalTime = $(this).data("arrivaltime").replace(" ", "T");
-        //let from = $(this).data("from");
-        //let codeFrom = $(this).data("codefrom");
-        //let to = $(this).data("to");
-        //let codeTo = $(this).data("codeto");
-        //let stops = $(this).data("stops");
-        //let airline = $(this).data("airline");
-        //let numStops = $(this).data("numstops");
-        //let flyDuration = $(this).data("flyduration");
-        //let legArr = constructLegs($(this).data("route"), flightId);
-        //let orderDate = moment().format("YYYY-MM-DDTHH:mm:ss");
-        //$("#tablePH").hide();
-        //$("#orderFrame").show();
-        //$('#orderForm').unbind('submit').submit(function () {
-        //    let o = {
-        //        Id: flightId,
-        //        Price: price,
-        //        DepartureTime: departureTime,
-        //        ArrivalTime: arrivalTime,
-        //        From: from,
-        //        CodeFrom: codeFrom,
-        //        To: to,
-        //        CodeTo: codeTo,
-        //        Stops: stops,
-        //        Airline: airline,
-        //        NumStops: numStops,
-        //        FlyDuration: flyDuration,
-        //        LegArr: legArr,
-        //        OrderDate: orderDate,
-        //        Passengers: $("#orderNames").val(),
-        //        Email: $("#orderEmail").val()
-        //    }
-        //    ajaxCall("POST", "../api/flights", JSON.stringify(o), flightPostSuccess, (err) => swal("Error: " + err));
-        //    return false; // preventDefault
-        //});
-        console.log($(this).data());
-        return false;
+        document.getElementById("orderForm").reset();
+        let longitude = $(this).data("longitude");
+        let latitude = $(this).data("latitude");
+        let price = $(this).data("price");
+        let packageInfo = $(this).data("packageinfo");
+        let city = $(this).data("city");
+        let arrivalTime = $(this).data("arrivaltime");
+        let departureTime = $(this).data("departuretime");
+        let date = $(this).data("date");
+        $("#tablePH").hide();
+        $("#companyName").val(localStorage['hasTourCompany']);
+        $("#orderFrame").show();
+        $('#orderForm').unbind('submit').submit(function () {
+            let profit = parseFloat($("#profit").val().replace("%", ""));
+            let o = {
+                Id: uuidv4(),
+                Longitude: longitude,
+                Latitude: latitude,
+                Price: parseFloat(parseFloat(price * (1.0 + profit / 100)).toFixed(2)),
+                Profit: profit,
+                PackageInfo: JSON.stringify(packageInfo),
+                CompanyName: localStorage['hasTourCompany'],
+                City: city,
+                ArrivalTime: arrivalTime,
+                DepartureTime: departureTime,
+                Date: `${date}T10:20:00`
+            };
+            console.log(o)
+            ajaxCall("POST", "../api/packages", JSON.stringify(o), packagePostSuccess, (err) => swal("Error: " + err));
+            return false; // preventDefault
+        });
     })
 }
 
@@ -488,8 +478,9 @@ function handleSearchSuccess(data) {
 function updatePanelPic(cityPic) {
     $("#plannerPanel").css('background',
         'linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.65) 100%), url("' + cityPic + '")');
-    $("#plannerPanel").css('background-size', '100% 100%');
-    $("#plannerPanel").css('background-position', 'center');
+    $("#plannerPanel").css('background-size', 'cover');
+    //$("#plannerPanel").css('text-align', 'center');
+    $("#plannerPanel").css('background-position', '50%');
     $("#plannerPanel").css('background-repeat', 'no-repeat');
 }
 
@@ -503,7 +494,8 @@ function getItineraryPriceByLabel(suspectedLabel, labelArrOfPoi) {
 }
 
 
-function flightPostSuccess() {
+function packagePostSuccess(data) {
+    console.log(data);
     $('#cancelOrder').trigger('click');
     swal("Ordered Successfully!", "Great Job", "success");
 }
@@ -520,7 +512,7 @@ function getQueryURL(from, to, dateFrom, dateTo) {
 
 
 function getQueryURLTriposo(locationId, startDate, endDate, arrivalTime, departureTime) {
-    return `https://www.triposo.com/api/20200803/day_planner.json?location_id=${locationId}&start_date=${startDate}&end_date=${endDate}&arrival_time=${arrivalTime}&departure_time=${departureTime}&${triposoCreds}`
+    return `https://www.triposo.com/api/20200803/day_planner.json?location_id=${locationId.replace(/ /g, "_")}&start_date=${startDate}&end_date=${endDate}&arrival_time=${arrivalTime}&departure_time=${departureTime}&${triposoCreds}`
 }
 
 

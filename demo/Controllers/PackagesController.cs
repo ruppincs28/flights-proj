@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using demo.Models;
 
 namespace demo.Controllers
 {
@@ -22,8 +23,9 @@ namespace demo.Controllers
         }
 
         // POST api/<controller>
-        public void Post([FromBody]string value)
+        public void Post([FromBody]Package package)
         {
+            package.insert();
         }
 
         // PUT api/<controller>/5

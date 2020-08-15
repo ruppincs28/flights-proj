@@ -490,6 +490,67 @@ public class DBservices
 
     #endregion
 
+    #region Package
+    public int insert(Package package)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommand(package);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
+
+    private String BuildInsertCommand(Package package)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}', N'{6}', N'{7}', N'{8}', N'{9}', N'{10}')",
+            package.Id, package.Price, package.Profit, package.Longitude, package.Latitude, package.PackageInfo, 
+                package.CompanyName, package.City, package.ArrivalTime, package.DepartureTime, package.Date);
+        String prefix = "INSERT INTO packages_final_cs " + "([id], [price], [profit], [longitude], [latitude], [packageinfo], [companyname], [city], [arrivaltime], [departuretime], [date]) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    #endregion
+
     // ToDo Remove when project is done
     public int insert(Discount discount)
     {

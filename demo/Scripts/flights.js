@@ -298,7 +298,7 @@ function handleSearchSuccess(data) {
                 '                            <th>To</th>' +
                 '                            <th>Stops</th>' +
                 '                            <th>Airline name</th>' +
-                '                            <th>Store in DB</th>' +
+                '                            <th>Order</th>' +
                 '                        </tr>' +
                 '                    </thead>' +
                 '                    <tbody id="resultPH"></tbody></table></div></div></div>'

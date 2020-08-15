@@ -17,6 +17,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
     <script type="text/javascript" src="../Scripts/bootstrap-clockpicker.min.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
     <script src="../Scripts/dateTimeHelpers.js"></script>
@@ -217,19 +218,30 @@
                         </div>
                         <br />
                         <div id="orderFrame" style="display: none;">
-                            <form id="orderForm">
-                                <label for="orderNames"><i class="fa fa-user"></i> <b>Names of Passengers</b></label>
-                                <input id="orderNames" type="text" name="firstname" placeholder="Name 1, Name 2, ..." required>
-                                <label for="orderEmail"><i class="fa fa-envelope"></i> <b>Email</b></label>
-                                <input id="orderEmail" type="text" name="email" placeholder="john@example.com" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required>
-                                <label for="agree">
-                                    <input type="checkbox" checked="checked" name="sameadr" id="agree" required> Agree to terms and conditions of NTLX company
-                                </label>
-                                <br />
-                                <input type="submit" value="Place Order" id="submitOrder" class="orderBTN">
-                                <br />
-                                <input type="button" value="Cancel" id="cancelOrder" class="cancelOrderBTN">
-                            </form>
+                            <div id="orderFramePanel" class="panel panel-default">
+                                <div class="panel-body">
+                                    <form id="orderForm">
+                                        <label for="companyName"><i class="fa fa-user"></i> <b>Company Name:</b></label>
+                                        <input id="companyName" type="text" name="companyName" disabled>
+                                        <label for="profit"><i class="fa fa-envelope"></i> <b>Profit Rate:</b></label>
+                                        <input type="text"
+                                               id="profit" 
+                                               name="profit"
+                                               placeholder="Enter the Profit Percentage You Are Expecting"
+                                               pattern="^((100)|(\d{1,2}(\.\d*)?))%$"
+                                               oninvalid="this.setCustomValidity('Enter a number (<100) followed by %, for example: 25%')"
+                                               oninput="this.setCustomValidity('')"
+                                               required />
+                                        <label for="agree">
+                                            <input type="checkbox" checked="checked" name="sameadr" id="agree" required>&nbsp&nbspAgree to terms and conditions of NTLX Package Vendor Company
+                                        </label>
+                                        <br />
+                                        <input type="submit" value="Place Order" id="submitOrder" class="orderBTN">
+                                        <br />
+                                        <input type="button" value="Cancel" id="cancelOrder" class="cancelOrderBTN">
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
