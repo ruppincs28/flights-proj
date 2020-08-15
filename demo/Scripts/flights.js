@@ -1,6 +1,6 @@
 ﻿var codesUrl = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name";
 var airlineCodesUrl = "https://api.skypicker.com/airlines?";
-var triposoCreds = "account=MLMIQSMM&token=0dxs7hkxphxfvovs2xmxk2vourmpbxmp";
+var triposoCreds = "account=FJOB5WE1&token=qu3z0x9m3ur20a5l6hzr5wmblv9mtpdo";
 $(document).ready(function () {
     // populate datalist with data
     if (!('locationCodes' in localStorage)) {
@@ -264,6 +264,8 @@ function handleSearch() {
     let start = $("#startDATE").val();
     let end = $("#endDATE").val();
     let url = getQueryURL(from, to, reverseDate(start), reverseDate(end))
+    $("#tablePHLoader").show();
+    $("#tablePH").hide();
     ajaxCall("GET", url, "", handleSearchSuccess, handleSearchError);
     return false;
 }
@@ -351,6 +353,15 @@ function handleSearchSuccess(data) {
         let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
                 ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}`
                     : `No connection`;
+        jQuery.ajaxSetup({ async: false });
+        $.get("https://www.triposo.com/api/20200803/day_planner.json?location_id=Moscow&start_date=2020-08-21&end_date=2020-08-21&arrival_time=15:12&departure_time=19:19&account=FJOB5WE1&token=qu3z0x9m3ur20a5l6hzr5wmblv9mtpdo").done((data) => {
+            console.log(data);
+        });
+        $.get("https://www.triposo.com/api/20200803/day_planner.json?location_id=Moscow&start_date=2020-08-21&end_date=2020-08-21&arrival_time=15:12&departure_time=19:19&account=FJOB5WE1&token=qu3z0x9m3ur20a5l6hzr5wmblv9mtpdo").fail((err) => {
+            console.log(err);
+        });
+        jQuery.ajaxSetup({ async: true });
+        //let packageStr = findPackage(...);
         $("#resultPH").append(
             '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
             '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
@@ -368,6 +379,8 @@ function handleSearchSuccess(data) {
             '</tr>'
         );
     }
+    $("#tablePHLoader").hide();
+    $("#tablePH").show();
     $(".addButton").on("click", function () {
         document.getElementById("orderForm").reset();
         let flightId = $(this).data("flightid");
