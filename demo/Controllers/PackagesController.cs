@@ -11,9 +11,9 @@ namespace demo.Controllers
     public class PackagesController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public IEnumerable<Package> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Package.GetAll();
         }
 
         // GET api/<controller>/5

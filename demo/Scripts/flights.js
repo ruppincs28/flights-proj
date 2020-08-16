@@ -18,18 +18,16 @@ $(document).ready(function () {
     }
     // populate datalist with data
 
-    // get discounts on page load
-    var triposoQueryURL = getQueryURLTriposo("Amsterdam", "2020-09-7", "2020-09-9", "4:19", "17:19");
-    $.get(triposoQueryURL).done((data) => {
+    // get packages on page load
+    ajaxCall("GET", "../api/packages", "", (data) => {
         console.log(data);
-        //localStorage["discountsUpdated"] = JSON.stringify(data);
+        localStorage["packagesUpdated"] = JSON.stringify(data);
         $("#loadingTabs").hide();
         $("#tabsNav").show();
-    });
-    $.get(triposoQueryURL).fail((err) => {
+    }, (err) => {
         console.log(err);
     });
-    //ajaxCall("GET", getQueryURLTriposo("Amsterdam", "2020-09-7", "2020-09-9", "4:19", "17:19"), "", (data) => console.log(data), discountErr); // load discounts from server for user search
+    // get packages on page load
 
     // interface show/hide handling
     $("#searchBookFlights").click(() => {
@@ -280,6 +278,7 @@ function handleSearchSuccess(data) {
         )
         return;
     }
+    let rowsWithTooltip = [];
     for (var i = 0; i < dataArr.length; i++) {
         if (i === 0) {
             $("#tablePH").empty()
@@ -351,19 +350,18 @@ function handleSearchSuccess(data) {
                                                 data-airline="${airline}" `
         let maxConnectionAssArr = getMaxConnection(currentItem.route);
         let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
-                ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}`
-                    : `No connection`;
-        jQuery.ajaxSetup({ async: false });
-        $.get("https://www.triposo.com/api/20200803/day_planner.json?location_id=Moscow&start_date=2020-08-21&end_date=2020-08-21&arrival_time=15:12&departure_time=19:19&account=FJOB5WE1&token=qu3z0x9m3ur20a5l6hzr5wmblv9mtpdo").done((data) => {
-            console.log(data);
-        });
-        $.get("https://www.triposo.com/api/20200803/day_planner.json?location_id=Moscow&start_date=2020-08-21&end_date=2020-08-21&arrival_time=15:12&departure_time=19:19&account=FJOB5WE1&token=qu3z0x9m3ur20a5l6hzr5wmblv9mtpdo").fail((err) => {
-            console.log(err);
-        });
-        jQuery.ajaxSetup({ async: true });
-        //let packageStr = findPackage(...);
+                ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}, hours: ${maxConnectionAssArr.arrivalToMaxConnection} - ${maxConnectionAssArr.departureFromMaxConnection}`
+            : `No connection`;
+        let packageStr = findPackage(maxConnectionAssArr.maxConnectionObj.CityFrom,
+            maxConnectionAssArr.arrivalToMaxConnection, maxConnectionAssArr.departureFromMaxConnection);
+        let rowStr;
+        console.log("SAK : " + packageStr)
+        if (packageStr === 'test')
+            rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle ' + 'hasTooltip' + '">';
+        else
+            rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">';
         $("#resultPH").append(
-            '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
+            rowStr +
             '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
             '<td>' + price + '</td>' +
             '<td>' + departureTime + '</td>' +
@@ -381,6 +379,7 @@ function handleSearchSuccess(data) {
     }
     $("#tablePHLoader").hide();
     $("#tablePH").show();
+    $('body').tooltip();
     $(".addButton").on("click", function () {
         document.getElementById("orderForm").reset();
         let flightId = $(this).data("flightid");
@@ -422,6 +421,89 @@ function handleSearchSuccess(data) {
             return false; // preventDefault
         });
     })
+}
+
+
+function findPackage(city, arrival, departure) { // returns package string if available, otherwise false
+    if (!(arrival.split("T")[0] === departure.split("T")[0]))
+        return false; // this connection is overnight, so the client has bigger problems than which museum they should visit :)
+    let dateToSearchFor = arrival.split("T")[0];
+    let valid = false;
+    packagesArr = JSON.parse(localStorage["packagesUpdated"]);
+    for (var i = 0; i < packagesArr.length; i++) {
+        let currentItem = packagesArr[i];
+        if (currentItem.City === city && currentItem.Date.split("T")[0] === dateToSearchFor) {  // we might have a match
+            valid = validatePackageIsViable(currentItem.PackageInfo, city, arrival, departure); // but still need to validate this trip is viable for the clients hours
+            if (valid)
+                return 'test';
+        }
+    }
+    return false;
+}
+
+
+function validatePackageIsViable(packageInfo, city, arrival, departure) {
+    // call triposo api and see that our package matches, return true/false accordingly
+    packageInfo = JSON.parse(packageInfo);
+    packageInfo = JSON.stringify(objectKeysToLowerCase(packageInfo));
+    let [startDate, startTime] = arrival.split('T');
+    let [endDate, endTime] = departure.split('T');
+    startTime = startTime.substring(0, startTime.length - 3);
+    endTime = endTime.substring(0, endTime.length - 3);
+    var triposoRes, triposoQueryURL = getQueryURLTriposo(city, startDate, endDate, startTime, endTime);
+    jQuery.ajaxSetup({ async: false });
+    $.get(triposoQueryURL).done((data) => {
+        triposoRes = data;
+    });
+    $.get(triposoQueryURL).fail((err) => {
+        console.log(err);
+    });
+    jQuery.ajaxSetup({ async: true });
+    if (triposoRes.results[0].days.length === 0)
+        return false;
+    let itineraryArr = triposoRes.results[0].days[0].itinerary_items;
+    let exactPackage = JSON.stringify(objectKeysToLowerCase(getExactPackage(itineraryArr)));
+    console.log(exactPackage)
+    console.log(packageInfo)
+    let identical = comparePackages(JSON.parse(exactPackage), JSON.parse(packageInfo));
+    console.log(identical)
+    if (identical)
+        return true;
+    return false;
+}
+
+
+function comparePackages(pkg1, pkg2) {
+    for (var i = 0; i < pkg1.length; i++) {
+        try {
+            if (pkg1[i].length !== pkg2[i].length)
+                return false;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+    return true;
+}
+
+
+function getExactPackage(package) {
+    let packageResult = {};
+    let lastTitle;
+    for (var i = 0; i < package.length; i++) {
+        let currentItem = package[i];
+        let title = currentItem.title;
+        let description = currentItem.description;
+        let poiName = currentItem.poi.name;
+        if (title !== "") { // load associative array with package info on each iteration
+            packageResult[title] = {};
+            packageResult[title][poiName] = description;
+        } else {
+            packageResult[lastTitle][poiName] = description;
+        }
+        lastTitle = title;
+    }
+    return packageResult;
 }
 
 
@@ -473,6 +555,8 @@ function getMaxConnection(route) {
     result = [];
     let maxTimeSpentInCountry = 0;
     let maxConnection;
+    let arrivalToMaxConnection;
+    let departureFromMaxConnection;
     let timeSpentInCountry = 0;
     let departureTime, arrivalTime;
     for (var i = 0; i < route.length; i++) {
@@ -497,12 +581,16 @@ function getMaxConnection(route) {
             if (timeSpentInCountry > maxTimeSpentInCountry) {
                 maxTimeSpentInCountry = timeSpentInCountry;
                 maxConnection = currRouteObj;
+                arrivalToMaxConnection = lastArrivalTime;
+                departureFromMaxConnection = departureTime;
             }
         }
     }
     return {
         lengthMaxConnection: maxTimeSpentInCountry / 60,
-        maxConnectionObj: maxConnection
+        maxConnectionObj: maxConnection,
+        arrivalToMaxConnection: arrivalToMaxConnection,
+        departureFromMaxConnection: departureFromMaxConnection
     };
 }
 
@@ -527,4 +615,14 @@ function discountCheck(numstops, from, to, airline, price, fromDate, toDate) {
         }
     }
     return false;
+}
+
+
+let objectKeysToLowerCase = function (origObj) {
+    return Object.keys(origObj).reduce(function (newObj, key) {
+        let val = origObj[key];
+        let newVal = (typeof val === 'object') ? objectKeysToLowerCase(val) : val;
+        newObj[key.toLowerCase()] = newVal;
+        return newObj;
+    }, {});
 }

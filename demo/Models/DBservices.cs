@@ -549,6 +549,57 @@ public class DBservices
         return command;
     }
 
+    public List<Package> getPackages()
+    {
+        List<Package> packageList = new List<Package>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM packages_final_cs";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Package p = new Package();
+
+                p.Id = (string)dr["Id"];
+                p.Price = Convert.ToDouble(dr["Price"]);
+                p.Profit = Convert.ToDouble(dr["Profit"]);
+                p.Longitude = Convert.ToDouble(dr["Longitude"]);
+                p.Latitude = Convert.ToDouble(dr["Latitude"]);
+                p.PackageInfo = (string)dr["Packageinfo"];
+                p.CompanyName = (string)dr["Companyname"];
+                p.City = (string)dr["City"];
+                p.ArrivalTime = dr["Arrivaltime"].ToString();
+                p.DepartureTime = dr["Departuretime"].ToString();
+                p.Date = ((DateTime)dr["date"]).Date;
+
+                packageList.Add(p);
+            }
+
+            return packageList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
     #endregion
 
     // ToDo Remove when project is done

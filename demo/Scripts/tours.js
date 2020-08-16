@@ -433,8 +433,8 @@ function handleSearchSuccess(data) {
                                                 data-longitude="${data.results[0].location.coordinates.longitude}" \
                                                 data-latitude="${data.results[0].location.coordinates.latitude}" \
                                                 data-packageinfo='${packageInfoStr}' \
-                                                data-arrivaltime="${$('#arrivalTime').val()}" \
-                                                data-departuretime="${$('#departureTime').val()}" \
+                                                data-arrivaltime="${$('#arrivalTime').val()}:00" \
+                                                data-departuretime="${$('#departureTime').val()}:00" \
                                                 data-city="${city}" \
                                                 data-date="${startDate}" `;
     $("#plannerPanelBody").append(`<br><b>${sumStr}</b><br>`);

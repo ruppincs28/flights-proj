@@ -211,3 +211,7 @@ label:not(.fieldsetLabel) {
         transform: rotate(360deg);
     }
 }
+
+.hasTooltip {
+    background-color: cyan !important;
+}
