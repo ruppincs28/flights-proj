@@ -1,6 +1,6 @@
 ﻿var codesUrl = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name";
 var airlineCodesUrl = "https://api.skypicker.com/airlines?";
-var triposoCreds = "account=FJOB5WE1&token=qu3z0x9m3ur20a5l6hzr5wmblv9mtpdo";
+var triposoCreds = "account=9E1ZY7ZF&token=ambjspmp8runo9lfcd44m7eb4wkh01ke";
 $(document).ready(function () {
     // populate datalist with data
     if (!('locationCodes' in localStorage)) {
@@ -488,14 +488,4 @@ function discountCheck(numstops, from, to, airline, price, fromDate, toDate) {
         }
     }
     return false;
-}
-
-
-let objectKeysToLowerCase = function (origObj) {
-    return Object.keys(origObj).reduce(function (newObj, key) {
-        let val = origObj[key];
-        let newVal = (typeof val === 'object') ? objectKeysToLowerCase(val) : val;
-        newObj[key.toLowerCase()] = newVal;
-        return newObj;
-    }, {});
 }

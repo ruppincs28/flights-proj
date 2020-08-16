@@ -365,6 +365,7 @@ function handleSearchSuccess(data) {
     dataArr = dataArr.itinerary_items
     cityPic = data.results[0].location.images[0].source_url;
     let packageInfoDict = {};
+    let packageInfoSequence = [];
     let lastTitle;
     let city = data.results[0].location.id.replace(/_/g, " ");
     let startDate = $("#startDATE").val();
@@ -402,30 +403,16 @@ function handleSearchSuccess(data) {
         if (title !== "") { // load associative array with package info on each iteration
             packageInfoDict[title] = {};
             packageInfoDict[title][poiName] = description;
+            lastTitle = title;
         } else {
             packageInfoDict[lastTitle][poiName] = description;
         }
+        packageInfoSequence.push(currentItem.title);
         $("#plannerPanelBody").append((title ? '<b>' + (title + '</b>' + '</br>') : "")
             + poiName + '</br>' + description + '</br>');
         updatePanelPic(cityPic);
-        lastTitle = title;
-        //$("#resultPH").append(
-        //    '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">' +
-        //    '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
-        //    '<td>' + price + '</td>' +
-        //    '<td>' + departureTime + '</td>' +
-        //    '<td>' + arrivalTime + '</td>' +
-        //    '<td>' + from + '</td>' +
-        //    '<td>' + to + '</td>' +
-        //    '<td>' + stops + '</td>' +
-        //    '<td>' + airline + '</td>' +
-        //    '<td>' + '<center><input type="button" class="addButton" value="Order"' + dataStr + '/>' + '</center></td>' +
-        //    '</tr>' +
-        //    '<tr>' +
-        //    '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">' + maxConnectionStr + '</div>' + '</td>' +
-        //    '</tr>'
-        //);
     }
+    packageInfoDict['sequence'] = packageInfoSequence;
     let totalSum = sumPackage + transportationPrice;
     let sumStr = sumPackage ? `Package: ${sumPackage}€<br> +<br>Transportation: ${transportationPrice}€<br>Total: ${totalSum}€` : "";
     let packageInfoStr = JSON.stringify(packageInfoDict).replace(/'/g, "");
@@ -467,7 +454,6 @@ function handleSearchSuccess(data) {
                 DepartureTime: departureTime,
                 Date: `${date}T10:20:00`
             };
-            console.log(o)
             ajaxCall("POST", "../api/packages", JSON.stringify(o), packagePostSuccess, (err) => swal("Error: " + err));
             return false; // preventDefault
         });
@@ -494,8 +480,7 @@ function getItineraryPriceByLabel(suspectedLabel, labelArrOfPoi) {
 }
 
 
-function packagePostSuccess(data) {
-    console.log(data);
+function packagePostSuccess() {
     $('#cancelOrder').trigger('click');
     swal("Ordered Successfully!", "Great Job", "success");
 }
