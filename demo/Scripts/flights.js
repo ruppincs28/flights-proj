@@ -333,9 +333,9 @@ function handleSearchSuccess(data) {
         }
         let numStops = (stops === 'Direct flight') ? 0 : (stops.match(/,/g) || []).length + 1;
         let route = JSON.stringify(currentItem.route);
-        let newPrice = discountCheck(numStops, codeFrom, codeTo, airline, price, departureTime, arrivalTime);
-        let newPriceStr = (newPrice !== false) ? ('<td id="discounted">' + newPrice + ' €' + '</td>') : ('<td>' + price + '</td>');
-        dataStr = ` data-price="${newPrice ? newPrice : price}" \
+        //let newPrice = discountCheck(numStops, codeFrom, codeTo, airline, price, departureTime, arrivalTime);
+        //let newPriceStr = (newPrice !== false) ? ('<td id="discounted">' + newPrice + ' €' + '</td>') : ('<td>' + price + '</td>');
+        dataStr = ` data-price="${price}" \
                                                 data-departuretime="${departureTime}" \
                                                 data-flightid="${flightId}" \
                                                 data-arrivaltime="${arrivalTime}" \
@@ -352,8 +352,11 @@ function handleSearchSuccess(data) {
         let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
                 ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}, hours: ${maxConnectionAssArr.arrivalToMaxConnection} - ${maxConnectionAssArr.departureFromMaxConnection}`
             : `No connection`;
-        let packageStr = findPackage(maxConnectionAssArr.maxConnectionObj.CityFrom,
-            maxConnectionAssArr.arrivalToMaxConnection, maxConnectionAssArr.departureFromMaxConnection);
+        let packageStr = "";
+        if (currentItem.route.length !== 1) {
+            packageStr = findPackage(maxConnectionAssArr.maxConnectionObj.CityFrom,
+                maxConnectionAssArr.arrivalToMaxConnection, maxConnectionAssArr.departureFromMaxConnection);
+        }
         let rowStr;
         console.log("SAK : " + packageStr)
         if (packageStr === 'test')

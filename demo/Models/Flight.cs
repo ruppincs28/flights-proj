@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using demo.Models.DataBaseServices;
 
 namespace demo.Models
 {
@@ -73,10 +74,10 @@ namespace demo.Models
 
         public int insert()
         {
-            DBservices dbs = new DBservices();
-            int numAffected = dbs.insert(this);
-            DBservices dbs2 = new DBservices();
-            int numAffected2 = dbs2.insert(this.LegArr);
+            FlightsDBService flightsDBService = new FlightsDBService();
+            int numAffected = flightsDBService.insert(this);
+            LegsDBService legsDBService = new LegsDBService();
+            int numAffected2 = legsDBService.insert(this.LegArr);
             return numAffected;
         }
 
@@ -87,8 +88,8 @@ namespace demo.Models
 
         public static List<Flight> GetAll()
         {
-            DBservices dbs = new DBservices();
-            return dbs.getFlights();
+            FlightsDBService flightsDBService = new FlightsDBService();
+            return flightsDBService.getFlights();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using demo.Models.DataBaseServices;
 
 namespace demo.Models
 {
@@ -57,14 +58,14 @@ namespace demo.Models
 
         public static List<Package> GetAll()
         {
-            DBservices dbs = new DBservices();
-            return dbs.getPackages();
+            PacagesDBService pacagesDBService = new PacagesDBService();
+            return pacagesDBService.getPackages();
         }
 
         public int insert()
         {
-            DBservices dbs = new DBservices();
-            int numAffected = dbs.insert(this);
+            PacagesDBService pacagesDBService = new PacagesDBService();
+            int numAffected = pacagesDBService.insert(this);
             return numAffected;
         }
     }

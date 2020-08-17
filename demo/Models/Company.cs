@@ -1,4 +1,6 @@
-﻿namespace demo.Models
+﻿using demo.Models.DataBaseServices;
+
+namespace demo.Models
 {
     public class Company
     {
@@ -24,8 +26,8 @@
 
         public static Company validateCompany(string username, string password)
         {
-            DBservices dbs = new DBservices();
-            Company returnVal = dbs.getCompany(username);
+            CompaniesDBService companiesDBService = new CompaniesDBService();
+            Company returnVal = companiesDBService.getCompany(username);
             if (returnVal != null)
             {
                 return returnVal.Password == password ? returnVal : null;
@@ -35,8 +37,8 @@
 
         public int insert()
         {
-            DBservices dbs = new DBservices();
-            int numAffected = dbs.insert(this);
+            CompaniesDBService companiesDBService = new CompaniesDBService();
+            int numAffected = companiesDBService.insert(this);
             return numAffected;
         }
     }

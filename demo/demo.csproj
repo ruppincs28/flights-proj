@@ -196,7 +196,14 @@
     <Compile Include="Models\Airline.cs" />
     <Compile Include="Models\Airport.cs" />
     <Compile Include="Models\Company.cs" />
-    <Compile Include="Models\DBservices.cs" />
+    <Compile Include="Models\DataBaseServices\AdminsDBService.cs" />
+    <Compile Include="Models\DataBaseServices\AirlinesDBService.cs" />
+    <Compile Include="Models\DataBaseServices\AirportsDBService.cs" />
+    <Compile Include="Models\DataBaseServices\CompaniesDBService.cs" />
+    <Compile Include="Models\DataBaseServices\DBservices.cs" />
+    <Compile Include="Models\DataBaseServices\FlightsDBService.cs" />
+    <Compile Include="Models\DataBaseServices\LegsDBService.cs" />
+    <Compile Include="Models\DataBaseServices\PacagesDBService.cs" />
     <Compile Include="Models\Discount.cs" />
     <Compile Include="Models\Flight.cs" />
     <Compile Include="Models\Leg.cs" />

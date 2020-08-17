@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using demo.Models.DataBaseServices;
 
 namespace demo.Models
 {
@@ -27,8 +28,8 @@ namespace demo.Models
 
         public static bool validateAdmin(string username, string password)
         {
-            DBservices dbs = new DBservices();
-            Admin returnVal = dbs.getAdmin(username);
+            AdminsDBService adminsDBService = new AdminsDBService();
+            Admin returnVal = adminsDBService.getAdmin(username);
             if (returnVal != null)
             {
                 return returnVal.Password == password ? true : false;

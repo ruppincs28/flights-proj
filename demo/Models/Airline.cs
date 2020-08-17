@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using demo.Models.DataBaseServices;
 
 namespace demo.Models
 {
@@ -18,8 +19,8 @@ namespace demo.Models
 
         public static int insert(List<Airline> airlines)
         {
-            DBservices dbs = new DBservices();
-            int numAffected = dbs.insert(airlines);
+            AirlinesDBService airlinesDBService = new AirlinesDBService();
+            int numAffected = airlinesDBService.insert(airlines);
             return numAffected;
         }
 

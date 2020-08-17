@@ -352,7 +352,7 @@ function handleSearch() {
 
 
 function handleSearchSuccess(data) {
-    dataArr = data.results[0].days[0]
+    dataArr = data.results[0].days;
     
     if (dataArr.length === 0) {
         $("#tablePH").empty()
@@ -362,7 +362,7 @@ function handleSearchSuccess(data) {
         return;
     }
     let sumPackage = 0;
-    dataArr = dataArr.itinerary_items
+    dataArr = dataArr[0].itinerary_items;
     cityPic = data.results[0].location.images[0].source_url;
     let packageInfoDict = {};
     let packageInfoSequence = [];

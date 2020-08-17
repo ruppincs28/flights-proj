@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using demo.Models.DataBaseServices;
 
 namespace demo.Models
 {
@@ -33,8 +34,8 @@ namespace demo.Models
 
         public static int insert(List<Airport> airports)
         {
-            DBservices dbs = new DBservices();
-            int numAffected = dbs.insert(airports);
+            AirportsDBService airAirportsDbService = new AirportsDBService();
+            int numAffected = airAirportsDbService.insert(airports);
             return numAffected;
         }
 
