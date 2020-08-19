@@ -410,9 +410,10 @@ function handleSearchSuccess(data) {
         packageInfoSequence.push(currentItem.title);
         $("#plannerPanelBody").append((title ? '<b>' + (title + '</b>' + '</br>') : "")
             + poiName + '</br>' + description + '</br>');
-        updatePanelPic(cityPic);
+        updatePanelPic(cityPic, "#plannerPanel");
     }
     packageInfoDict['sequence'] = packageInfoSequence;
+    packageInfoDict['cityPicURL'] = cityPic;
     let totalSum = sumPackage + transportationPrice;
     let sumStr = sumPackage ? `Package: ${sumPackage}€<br> +<br>Transportation: ${transportationPrice}€<br>Total: ${totalSum}€` : "";
     let packageInfoStr = JSON.stringify(packageInfoDict).replace(/'/g, "");
@@ -458,16 +459,6 @@ function handleSearchSuccess(data) {
             return false; // preventDefault
         });
     })
-}
-
-
-function updatePanelPic(cityPic) {
-    $("#plannerPanel").css('background',
-        'linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.65) 100%), url("' + cityPic + '")');
-    $("#plannerPanel").css('background-size', 'cover');
-    //$("#plannerPanel").css('text-align', 'center');
-    $("#plannerPanel").css('background-position', '50%');
-    $("#plannerPanel").css('background-repeat', 'no-repeat');
 }
 
 

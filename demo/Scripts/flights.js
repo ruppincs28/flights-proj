@@ -20,10 +20,14 @@ $(document).ready(function () {
 
     // get packages on page load
     ajaxCall("GET", "../api/packages", "", (data) => {
-        console.log(data);
         localStorage["packagesUpdated"] = JSON.stringify(data);
-        $("#loadingTabs").hide();
-        $("#tabsNav").show();
+        ajaxCall("GET", "../api/companies/getcompanies", "", (data) => {
+            localStorage["companiesUpdated"] = JSON.stringify(data);
+            $("#loadingTabs").hide();
+            $("#tabsNav").show();
+        }, (err) => {
+            console.log(err);
+        });
     }, (err) => {
         console.log(err);
     });
@@ -349,20 +353,26 @@ function handleSearchSuccess(data) {
                                                 data-flyduration="${flyDuration}" \
                                                 data-airline="${airline}" `
         let maxConnectionAssArr = getMaxConnection(currentItem.route);
-        let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
-                ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}, hours: ${maxConnectionAssArr.arrivalToMaxConnection} - ${maxConnectionAssArr.departureFromMaxConnection}`
-            : `No connection`;
-        let packageStr = "";
+        //let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
+        //        ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}, hours: ${maxConnectionAssArr.arrivalToMaxConnection} - ${maxConnectionAssArr.departureFromMaxConnection}`
+        //    : `No connection`;
+        let packageObj;
         if (currentItem.route.length !== 1) {
-            packageStr = findPackage(maxConnectionAssArr.maxConnectionObj.CityFrom,
+            packageObj = findPackage(maxConnectionAssArr.maxConnectionObj.CityFrom,
                 maxConnectionAssArr.arrivalToMaxConnection, maxConnectionAssArr.departureFromMaxConnection);
         }
         let rowStr;
-        console.log("SAK : " + packageStr)
-        if (packageStr === 'test')
+        let packageStr = "";
+        let imageDivId = "";
+        if (packageObj !== false) {
             rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle ' + 'hasTooltip' + '">';
-        else
+            let assembleRes = assemblePackageStr(packageObj);
+            packageStr = assembleRes[0];
+            imageDivId = assembleRes[1];
+        }
+        else {
             rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">';
+        }
         $("#resultPH").append(
             rowStr +
             '<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>' +
@@ -376,9 +386,11 @@ function handleSearchSuccess(data) {
             '<td>' + '<center><input type="button" class="addButton" value="Order"' + dataStr + '/>' + '</center></td>' +
             '</tr>' +
             '<tr>' +
-            '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">' + maxConnectionStr + '</div>' + '</td>' +
+            '<td colspan="12" class="hiddenRow">' + '<div id="entry' + i + '" class="accordian-body collapse">' + packageStr + '</div>' + '</td>' +
             '</tr>'
         );
+        if (packageStr !== "")
+            updatePanelPic(JSON.parse(packageObj.PackageInfo).cityPicURL, `#${imageDivId}`);
     }
     $("#tablePHLoader").hide();
     $("#tablePH").show();

@@ -42,7 +42,7 @@
 }
 
 
-function findPackage(city, arrival, departure) { // returns package string if available, otherwise false
+function findPackage(city, arrival, departure) { // returns package obj if available, otherwise false
     if (!(arrival.split("T")[0] === departure.split("T")[0]))
         return false; // this connection is overnight, so the client has bigger problems than which museum they should visit :)
     let dateToSearchFor = arrival.split("T")[0];
@@ -54,7 +54,7 @@ function findPackage(city, arrival, departure) { // returns package string if av
         if ((currentItem.City === city) && (currentItem.Date.split("T")[0] === dateToSearchFor)) {  // we might have a match
             valid = validatePackageIsViable(currentItem.PackageInfo, city, arrival, departure); // but still need to validate this trip is viable for the clients hours
             if (valid)
-                return 'test';
+                return currentItem;
         }
     }
     return false;
@@ -100,4 +100,42 @@ function getExactPackageSequence(package) {
     }
     console.log(packageSequenceResult)
     return packageSequenceResult;
+}
+
+function assemblePackageStr(package) {
+    let packageInfoParsed = JSON.parse(package.PackageInfo);
+    let companyName = package.CompanyName;
+    delete packageInfoParsed['sequence'];
+    delete packageInfoParsed['cityPicURL'];
+    let res = "";
+    let resArr = [];
+    let companyImg = JSON.parse(localStorage["companiesUpdated"]).find((company) => company.Username === companyName).Image;
+    let uuid = uuidv4();
+    res +=
+        '<br><div class="col-lg-12">' +
+        '        <div class="panel panel-default" id="' + uuid + '">' +
+        '<div class="panel-body">' +
+        '<h3 id="planTitle">' + package.City + '</h3>' +
+        '<h4 id="planDate">' + package.Date.split("T")[0] + '</h4>';
+    for (k1 in packageInfoParsed) {
+        res += (k1 ? '<b>' + (k1 + '</b>' + '</br>') : "");
+        for (k2 in packageInfoParsed[k1]) {
+            res += k2 + '</br>' + packageInfoParsed[k1][k2] + '</br>';
+        }
+    }
+    res += '<h4>Offer By Company: ' + companyName + '</h4>';
+    res += '<h4>Price: ' + package.Price + '</h4>';
+    res += '<img id="logo" src="' + companyImg + '" />';
+    res += '</div></div></div>';
+    resArr.push(res);
+    resArr.push(uuid);
+    return resArr;
+}
+
+function updatePanelPic(cityPic, divId) {
+    $(divId).css('background',
+        'linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.65) 100%), url("' + cityPic + '")');
+    $(divId).css('background-size', 'cover');
+    $(divId).css('background-position', '50%');
+    $(divId).css('background-repeat', 'no-repeat');
 }

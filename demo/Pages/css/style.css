@@ -213,5 +213,9 @@ label:not(.fieldsetLabel) {
 }
 
 .hasTooltip {
-    background-color: cyan !important;
+    background-color: #5CAEB6 !important;
+}
+
+.companyImg {
+
 }

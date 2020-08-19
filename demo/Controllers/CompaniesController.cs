@@ -39,5 +39,12 @@ namespace demo.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpGet]
+        [Route("api/companies/getcompanies")]
+        public List<Company> getCompanies()
+        {
+            return Company.GetCompanies();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using demo.Models.DataBaseServices;
+﻿using System.Collections.Generic;
+using demo.Models.DataBaseServices;
 
 namespace demo.Models
 {
@@ -40,6 +41,12 @@ namespace demo.Models
             CompaniesDBService companiesDBService = new CompaniesDBService();
             int numAffected = companiesDBService.insert(this);
             return numAffected;
+        }
+
+        public static List<Company> GetCompanies()
+        {
+            CompaniesDBService companiesDBService = new CompaniesDBService();
+            return companiesDBService.getCompanies();
         }
     }
 }

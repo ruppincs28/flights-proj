@@ -16,6 +16,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
     <script src="../Scripts/dateTimeHelpers.js"></script>
     <script src="../Scripts/discountTblActions.js"></script>
@@ -23,7 +24,7 @@
     <script src="../Scripts/flights.js"></script>
     <link href="css/style.css" rel="stylesheet" />
 </head>
-<body data-selector=".hasTooltip" data-container="body" data-placement="left" data-title="Package Available!">
+<body data-selector=".hasTooltip" data-container="body" data-trigger="hover" data-placement="left" data-title="Package Available!">
     <div class="container">
         <div class="header clearfix" id="tabsNav" style="display: none;">
             <nav>
@@ -222,7 +223,7 @@
                                 <label for="orderEmail"><i class="fa fa-envelope"></i> <b>Email</b></label>
                                 <input id="orderEmail" type="text" name="email" placeholder="john@example.com" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required>
                                 <label for="agree">
-                                    <input type="checkbox" checked="checked" name="sameadr" id="agree" required> Agree to terms and conditions of NTLX company
+                                    <input type="checkbox" checked="checked" name="agree" id="agree" required>&nbsp;&nbsp;Agree to terms and conditions of NTLX company
                                 </label>
                                 <br />
                                 <input type="submit" value="Place Order" id="submitOrder" class="orderBTN">

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
@@ -100,6 +101,49 @@ namespace demo.Models.DataBaseServices
                 {
                     con.Close();
                 }
+            }
+        }
+
+        public List<Company> getCompanies()
+        {
+            List<Company> companyList = new List<Company>();
+            SqlConnection con = null;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM companies_final_cs";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    Company c = new Company();
+
+                    c.Username = (string)dr["Username"];
+                    c.Password = String.Empty;
+                    c.Image = (string)dr["Image"];
+
+                    companyList.Add(c);
+                }
+
+                return companyList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
             }
         }
     }
