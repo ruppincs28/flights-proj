@@ -22,7 +22,7 @@ $(document).ready(function () {
             '                    <li role="presentation"><a id="registerCompany" href="#">Register new Tour Company</a></li>' +
             '                </ul>' +
             '            </nav>' +
-            '            <h3 class="text-muted"><img id="logo" src="logo.png" /></h3>' +
+            '            <h3 class="text-muted"><img id="logo" src="vendor.png" /></h3>' +
             '        </div>');
     } else {
         $("#mainContainer").prepend('<div class="header clearfix" id="tabsNav" style="display: none;">' +
