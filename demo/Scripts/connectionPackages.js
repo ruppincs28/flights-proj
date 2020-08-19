@@ -147,7 +147,7 @@ function updatePanelPic(cityPic, divId) {
     $(divId).css('background',
         'linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.65) 100%), url("' + cityPic + '")');
     $(divId).css('background-size', 'cover');
-    $(divId).css('background-position', 'center center');
+    $(divId).css('background-position', '50%');
     $(divId).css('background-repeat', 'no-repeat');
 }
 
