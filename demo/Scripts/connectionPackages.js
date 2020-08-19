@@ -147,13 +147,13 @@ function updatePanelPic(cityPic, divId) {
     $(divId).css('background',
         'linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.65) 100%), url("' + cityPic + '")');
     $(divId).css('background-size', 'cover');
-    $(divId).css('background-position', '50%');
+    $(divId).css('background-position', 'center center');
     $(divId).css('background-repeat', 'no-repeat');
 }
 
 
 function handlePackageInOrderForm(selector) {
-    // we need some adjustments in order forms for package + flight
+    // some adjustments are needed in order forms for package + flight combo
     if ($(selector).data("haspackage") === "hasPackage") {
         $('label[for="agree"]').after('<label for="package">' +
             '<input type="checkbox" checked="checked" name="package" id="package" >&nbsp;&nbsp;Also include package for max connection' +

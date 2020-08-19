@@ -220,7 +220,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Pages\css\bootstrap-clockpicker.min.css" />
+    <Content Include="Pages\css\indexStyle.css" />
     <Content Include="Pages\flights.html" />
+    <Content Include="Pages\img\beach.jpg" />
+    <Content Include="Pages\img\sprites\sprite.png" />
+    <Content Include="Pages\index.html" />
     <Content Include="Pages\logo.png" />
     <Content Include="Pages\css\style.css" />
     <Content Include="Pages\testing_html_patterns.html" />
