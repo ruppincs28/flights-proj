@@ -48,16 +48,27 @@ function findPackage(city, arrival, departure) { // returns package obj if avail
     let dateToSearchFor = arrival.split("T")[0];
     let valid = false;
     let packagesArr = JSON.parse(localStorage["packagesUpdated"]);
+    let validItems = [];
     for (var i = 0; i < packagesArr.length; i++) {
         let currentItem = packagesArr[i];
-        console.log(currentItem.City, city, currentItem.Date.split("T")[0], dateToSearchFor)
         if ((currentItem.City === city) && (currentItem.Date.split("T")[0] === dateToSearchFor)) {  // we might have a match
             valid = validatePackageIsViable(currentItem.PackageInfo, city, arrival, departure); // but still need to validate this trip is viable for the clients hours
             if (valid)
-                return currentItem;
+                validItems.push(currentItem);
         }
     }
-    return false;
+    if (validItems.length === 0)
+        return false;
+    // take the cheapest package that fits the client
+    let minPrice = validItems[0].Price;
+    let minPackage = validItems[0];
+    for (var j = 0; j < validItems.length; j++) {
+        if (validItems[j].Price < minPrice) {
+            minPrice = validItems[j].Price;
+            minPackage = validItems[j];
+        }
+    }
+    return minPackage;
 }
 
 
@@ -65,7 +76,6 @@ function validatePackageIsViable(packageInfo, city, arrival, departure) {
     // call triposo api and see that our package matches, return true/false accordingly
     packageInfo = JSON.parse(packageInfo);
     suspectedPackageSequence = packageInfo.sequence;
-    console.log(suspectedPackageSequence)
     let [startDate, startTime] = arrival.split('T');
     let [endDate, endTime] = departure.split('T');
     startTime = startTime.substring(0, startTime.length - 3);
@@ -98,7 +108,6 @@ function getExactPackageSequence(package) {
         let title = currentItem.title;
         packageSequenceResult.push(title);
     }
-    console.log(packageSequenceResult)
     return packageSequenceResult;
 }
 
@@ -140,4 +149,17 @@ function updatePanelPic(cityPic, divId) {
     $(divId).css('background-size', 'cover');
     $(divId).css('background-position', '50%');
     $(divId).css('background-repeat', 'no-repeat');
+}
+
+
+function handlePackageInOrderForm(selector) {
+    // we need some adjustments in order forms for package + flight
+    if ($(selector).data("haspackage") === "hasPackage") {
+        $('label[for="agree"]').after('<label for="package">' +
+            '<input type="checkbox" checked="checked" name="package" id="package" >&nbsp;&nbsp;Also include package for max connection' +
+            '</label>');
+    } else {
+        $('label[for="package"]').remove();
+        $('#package').remove();
+    }
 }

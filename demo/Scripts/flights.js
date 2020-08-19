@@ -370,6 +370,7 @@ function handleSearchSuccess(data) {
             let assembleRes = assemblePackageStr(maxConnectionStr, packageObj);
             packageStr = assembleRes[0];
             imageDivId = assembleRes[1];
+            dataStr += 'data-haspackage="hasPackage" '
         }
         else {
             rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">';
@@ -412,6 +413,7 @@ function handleSearchSuccess(data) {
         let flyDuration = $(this).data("flyduration");
         let legArr = constructLegs($(this).data("route"), flightId);
         let orderDate = moment().format("YYYY-MM-DDTHH:mm:ss");
+        handlePackageInOrderForm(this); // adjustments for order for that contains package + flight
         $("#tablePH").hide();
         $("#orderFrame").show();
         $('#orderForm').unbind('submit').submit(function () {
