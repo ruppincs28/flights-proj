@@ -102,7 +102,7 @@ function getExactPackageSequence(package) {
     return packageSequenceResult;
 }
 
-function assemblePackageStr(package) {
+function assemblePackageStr(maxConnectionStr, package) {
     let packageInfoParsed = JSON.parse(package.PackageInfo);
     let companyName = package.CompanyName;
     delete packageInfoParsed['sequence'];
@@ -117,6 +117,8 @@ function assemblePackageStr(package) {
         '<div class="panel-body">' +
         '<h3 id="planTitle">' + package.City + '</h3>' +
         '<h4 id="planDate">' + package.Date.split("T")[0] + '</h4>';
+    res += '<b>' + maxConnectionStr + '</b><br>';
+    res += '<b>Were pleased to offer you a package that might lighten your stay in this connection :)</b><br><br>';
     for (k1 in packageInfoParsed) {
         res += (k1 ? '<b>' + (k1 + '</b>' + '</br>') : "");
         for (k2 in packageInfoParsed[k1]) {
@@ -124,7 +126,7 @@ function assemblePackageStr(package) {
         }
     }
     res += '<h4>Offer By Company: ' + companyName + '</h4>';
-    res += '<h4>Price: ' + package.Price + '</h4>';
+    res += '<h4>Price: ' + package.Price + '€</h4>';
     res += '<img id="logo" src="' + companyImg + '" />';
     res += '</div></div></div>';
     resArr.push(res);

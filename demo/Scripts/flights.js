@@ -353,9 +353,10 @@ function handleSearchSuccess(data) {
                                                 data-flyduration="${flyDuration}" \
                                                 data-airline="${airline}" `
         let maxConnectionAssArr = getMaxConnection(currentItem.route);
-        //let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Length of max connection: 
-        //        ${maxConnectionAssArr.lengthMaxConnection}, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}, hours: ${maxConnectionAssArr.arrivalToMaxConnection} - ${maxConnectionAssArr.departureFromMaxConnection}`
-        //    : `No connection`;
+        let maxConnectionStr = maxConnectionAssArr.maxConnectionObj ? `Your max connection length: 
+                ${maxConnectionAssArr.lengthMaxConnection.toFixed(2)} hours, in: ${maxConnectionAssArr.maxConnectionObj.CityFrom}, hours: 
+                ${maxConnectionAssArr.arrivalToMaxConnection.replace("T", " ")} - ${maxConnectionAssArr.departureFromMaxConnection.replace("T", " ")}`
+            : `No connection`;
         let packageObj;
         if (currentItem.route.length !== 1) {
             packageObj = findPackage(maxConnectionAssArr.maxConnectionObj.CityFrom,
@@ -366,7 +367,7 @@ function handleSearchSuccess(data) {
         let imageDivId = "";
         if (packageObj !== false) {
             rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle ' + 'hasTooltip' + '">';
-            let assembleRes = assemblePackageStr(packageObj);
+            let assembleRes = assemblePackageStr(maxConnectionStr, packageObj);
             packageStr = assembleRes[0];
             imageDivId = assembleRes[1];
         }
