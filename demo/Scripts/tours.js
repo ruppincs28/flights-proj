@@ -95,7 +95,7 @@ $(document).ready(function () {
             $("#adminLoginForm").show();
             return;
         }
-        ajaxCall("GET", "../api/packages", "", getOrdersSuccess, discountErr); // load orders from server
+        ajaxCall("GET", `../api/packages?companyName=${localStorage["hasTourCompany"]}`, "", getOrdersSuccess, discountErr); // load orders from server
         $("#orderInterface").show();
     });
     $("#registerCompany").click(() => {
@@ -131,7 +131,7 @@ $(document).ready(function () {
     $("#discountForm").submit(discountEditSubmitHandler); // wire the submit event to a function called f1
     $("#searchForm").submit(handleSearch);
     $("#myFlightsBTN").click(handleMyFlights);
-    $('input[name="sources"], input[name="destinations"]').on("blur", validateInDataList);
+    $('#arrivalTime, #departureTime').on("blur", validateTime);
 
     // validate dates in form
     dateStabilizer();
@@ -155,38 +155,38 @@ function getOrdersSuccess(orderdata) {
                 {
                     data: "Price",
                     render: function (data, type, row, meta) {
-                        return `${row.Price} €`;
+                        return `${row.Price.toFixed(2)} €`;
                     }
                 },
                 {
                     data: "Profit",
                     render: function (data, type, row, meta) {
-                        return `${row.Profit} %`;
+                        return `${row.Profit.toFixed(2)} %`;
                     }
                 },
                 { data: "City" },
                 {
                     data: "ArrivalTime",
                     render: function (data, type, row, meta) {
-                        return row.ArrivalTime.replace("T", " ");
+                        return row.ArrivalTime.split("T")[0];
                     }
                 },
                 {
                     data: "DepartureTime",
                     render: function (data, type, row, meta) {
-                        return row.DepartureTime.replace("T", " ");
+                        return row.DepartureTime.split("T")[0];
                     }
                 },
                 {
                     data: "Date",
                     render: function (data, type, row, meta) {
-                        return row.Date.replace("T", " ");
+                        return row.Date.split("T")[0];
                     }
                 },
                 {
                     data: "SalesProfit",
                     render: function (data, type, row, meta) {
-                        return `${row.SalesProfit} €`;
+                        return `${row.SalesProfit.toFixed(2)} €`;
                     }
                 },
             ],

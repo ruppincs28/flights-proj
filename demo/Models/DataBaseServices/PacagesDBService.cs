@@ -66,7 +66,7 @@ namespace demo.Models.DataBaseServices
             return command;
         }
 
-        public List<Package> getPackages()
+        public List<Package> getPackages(string companyName)
         {
             List<Package> packageList = new List<Package>();
             SqlConnection con = null;
@@ -75,7 +75,7 @@ namespace demo.Models.DataBaseServices
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT * FROM packages_final_cs";
+                String selectSTR = "SELECT * FROM packages_final_cs" + (companyName != "noCompanyName" ? $" where companyname='{companyName}'" : "");
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader

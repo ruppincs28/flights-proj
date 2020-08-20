@@ -43,7 +43,7 @@
 
 
 function findPackage(city, arrival, departure) { // returns package obj if available, otherwise false
-    if (!(arrival.split("T")[0] === departure.split("T")[0]))
+    if (!(arrival.split("T")[0] === departure.split("T")[0]) || diffInMinutes(departure, arrival) < 2 * 60) // we dont want clients rushing to see museums :)
         return false; // this connection is overnight, so the client has bigger problems than which museum they should visit :)
     let dateToSearchFor = arrival.split("T")[0];
     let valid = false;

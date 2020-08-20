@@ -59,10 +59,10 @@ namespace demo.Models
         public DateTime Date { get => date; set => date = value; }
         public double SalesProfit { get => salesProfit; set => salesProfit = value; }
 
-        public static List<Package> GetAll()
+        public static List<Package> GetAll(string companyName)
         {
             PacagesDBService pacagesDBService = new PacagesDBService();
-            return pacagesDBService.getPackages();
+            return pacagesDBService.getPackages(companyName);
         }
 
         public int insert()

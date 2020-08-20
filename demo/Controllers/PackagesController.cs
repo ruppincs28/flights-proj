@@ -13,13 +13,13 @@ namespace demo.Controllers
         // GET api/<controller>
         public IEnumerable<Package> Get()
         {
-            return Package.GetAll();
+            return Package.GetAll("noCompanyName");
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public IEnumerable<Package> Get(string companyname)
         {
-            return "value";
+            return Package.GetAll(companyname);
         }
 
         // POST api/<controller>
