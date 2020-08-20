@@ -95,7 +95,8 @@ namespace demo.Models.DataBaseServices
                     p.City = (string)dr["City"];
                     p.ArrivalTime = dr["Arrivaltime"].ToString();
                     p.DepartureTime = dr["Departuretime"].ToString();
-                    p.Date = ((DateTime)dr["date"]).Date;
+                    p.Date = ((DateTime)dr["Date"]).Date;
+                    p.SalesProfit = Convert.ToDouble(dr["Salesprofit"]);
 
                     packageList.Add(p);
                 }

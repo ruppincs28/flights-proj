@@ -20,9 +20,10 @@ namespace demo.Models
         string arrivalTime;
         string departureTime;
         DateTime date;
+        double salesProfit;
 
         public Package(string id, double longitude, double latitude, double price, double profit, string packageInfo, string companyName, 
-            string city, string arrivalTime, string departureTime, DateTime date)
+            string city, string arrivalTime, string departureTime, DateTime date, double salesProfit)
         {
             this.Id = id;
             this.Longitude = longitude;
@@ -35,6 +36,7 @@ namespace demo.Models
             this.ArrivalTime = arrivalTime;
             this.DepartureTime = departureTime;
             this.Date = date;
+            this.SalesProfit = salesProfit;
         }
 
         public Package()
@@ -55,7 +57,7 @@ namespace demo.Models
         public string ArrivalTime { get => arrivalTime; set => arrivalTime = value; }
         public string DepartureTime { get => departureTime; set => departureTime = value; }
         public DateTime Date { get => date; set => date = value; }
-
+        public double SalesProfit { get => salesProfit; set => salesProfit = value; }
 
         public static List<Package> GetAll()
         {

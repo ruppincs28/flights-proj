@@ -161,15 +161,7 @@ function getOrdersSuccess(orderdata) {
                 {
                     data: "Profit",
                     render: function (data, type, row, meta) {
-                        return `${row.Price} €`;
-                    }
-                },
-                { data: "CodeFrom" },
-                { data: "CodeTo" },
-                {
-                    data: "DepartureTime",
-                    render: function (data, type, row, meta) {
-                        return row.DepartureTime.replace("T", " ");
+                        return `${row.Profit} %`;
                     }
                 },
                 {
@@ -178,14 +170,20 @@ function getOrdersSuccess(orderdata) {
                         return row.ArrivalTime.replace("T", " ");
                     }
                 },
-                { data: "Stops" },
-                { data: "FlyDuration" },
                 {
-                    data: "OrderDate",
+                    data: "DepartureTime",
                     render: function (data, type, row, meta) {
-                        return row.OrderDate.replace("T", " ");
+                        return row.DepartureTime.replace("T", " ");
                     }
                 },
+                {
+                    data: "Date",
+                    render: function (data, type, row, meta) {
+                        return row.Date.replace("T", " ");
+                    }
+                },
+                { data: "Stops" },
+                { data: "FlyDuration" },
                 { data: "Passengers" }
             ],
         });
