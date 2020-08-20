@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using demo.Models.DataBaseServices;
@@ -67,6 +68,22 @@ namespace demo.Models
             PacagesDBService pacagesDBService = new PacagesDBService();
             int numAffected = pacagesDBService.insert(this);
             return numAffected;
+        }
+
+        public static void UpdateRevenue(string packageId)
+        {
+            // read the package table from the database into a dbs object
+            PacagesDBService dbs = new PacagesDBService();
+            dbs = dbs.readPackage(packageId);
+
+            foreach (DataRow dr in dbs.dt.Rows)
+            {
+                double profitForOnePackage = (Convert.ToDouble(dr["Price"])) - (Convert.ToDouble(dr["Price"]) / (1 + (Convert.ToDouble(dr["Profit"]) / 100)));
+                double newSalesProfit = Convert.ToDouble(dr["Salesprofit"]) + profitForOnePackage;
+                dr["Salesprofit"] = newSalesProfit;
+            }
+            // update the DB
+            dbs.update();
         }
     }
 }

@@ -116,5 +116,35 @@ namespace demo.Models.DataBaseServices
 
             }
         }
+
+        public PacagesDBService readPackage(string packageId)
+        {
+            SqlConnection con = null;
+            try
+            {
+                con = connect("DBConnectionString");
+                da = new SqlDataAdapter("select * from packages_final_cs where id='" + packageId + "'", con);
+                SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                dt = ds.Tables[0];
+            }
+
+            catch (Exception ex)
+            {
+                // write errors to log file
+                // try to handle the error
+                throw ex;
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+            return this;
+        }
     }
 }

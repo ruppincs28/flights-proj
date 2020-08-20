@@ -27,7 +27,7 @@ namespace demo.Controllers
         {
             if (flight.insert() != 0)
             {
-                //Package.UpdateRevenue();
+                Package.UpdateRevenue(flight.PackageId);
             }
         }
 
