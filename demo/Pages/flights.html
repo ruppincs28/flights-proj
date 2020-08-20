@@ -217,19 +217,22 @@
                         </div>
                         <br />
                         <div id="orderFrame" style="display: none;">
-                            <form id="orderForm">
-                                <label for="orderNames"><i class="fa fa-user"></i> <b>Names of Passengers</b></label>
-                                <input id="orderNames" type="text" name="firstname" placeholder="Name 1, Name 2, ..." required>
-                                <label for="orderEmail"><i class="fa fa-envelope"></i> <b>Email</b></label>
-                                <input id="orderEmail" type="text" name="email" placeholder="john@example.com" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required>
-                                <label for="agree">
-                                    <input type="checkbox" checked="checked" name="agree" id="agree" required>&nbsp;&nbsp;Agree to terms and conditions of NTLX company
-                                </label>
-                                <br />
-                                <input type="submit" value="Place Order" id="submitOrder" class="orderBTN">
-                                <br />
-                                <input type="button" value="Cancel" id="cancelOrder" class="cancelOrderBTN">
-                            </form>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form id="orderForm">
+                                        <label for="orderNames"><i class="fa fa-user"></i> <b>Names of Passengers</b></label>
+                                        <input id="orderNames" type="text" name="firstname" placeholder="Name 1, Name 2, ..." required>
+                                        <label for="orderEmail"><i class="fa fa-envelope"></i> <b>Email</b></label>
+                                        <input id="orderEmail" type="text" name="email" placeholder="john@example.com" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required>
+                                        <label for="agree">
+                                            <input type="checkbox" checked="checked" name="agree" id="agree" required>&nbsp;&nbsp;Agree to terms and conditions of NTLX company
+                                        </label>
+                                        <input type="submit" value="Place Order" id="submitOrder" class="orderBTN">
+                                        <br />
+                                        <input type="button" value="Cancel" id="cancelOrder" class="cancelOrderBTN">
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

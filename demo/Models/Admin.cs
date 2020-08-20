@@ -33,10 +33,8 @@ namespace demo.Models
             if (returnVal != null)
             {
                 return returnVal.Password == password ? true : false;
-            } else
-            {
-                return false;
-            }
+            } 
+            return false;
         }
 
     }

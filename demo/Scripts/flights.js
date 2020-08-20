@@ -64,6 +64,7 @@ $(document).ready(function () {
     });
     $("#cancelOrder").click(() => {
         $("#orderFrame").hide();
+        $("#flightPriceStr").remove();
         $("#tablePH").show();
     });
     // interface show/hide handling
@@ -370,7 +371,7 @@ function handleSearchSuccess(data) {
             let assembleRes = assemblePackageStr(maxConnectionStr, packageObj);
             packageStr = assembleRes[0];
             imageDivId = assembleRes[1];
-            dataStr += 'data-haspackage="hasPackage" '
+            dataStr += 'data-haspackage="hasPackage" data-packageprice="' + packageObj.Price + '" data-packageid="' + packageObj.Id + '" ';
         }
         else {
             rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle">';
@@ -413,6 +414,8 @@ function handleSearchSuccess(data) {
         let flyDuration = $(this).data("flyduration");
         let legArr = constructLegs($(this).data("route"), flightId);
         let orderDate = moment().format("YYYY-MM-DDTHH:mm:ss");
+        let packageId = $(this).data("packageid");
+        $('#submitOrder').before('<div id="flightPriceStr"><div><b>&nbsp;&nbsp;Note: Prices are per person</b></div><div><b>&nbsp;&nbsp;Price of flight: ' + price + '€</b></div></div>');
         handlePackageInOrderForm(this); // adjustments for order for that contains package + flight
         $("#tablePH").hide();
         $("#orderFrame").show();
@@ -433,7 +436,8 @@ function handleSearchSuccess(data) {
                 LegArr: legArr,
                 OrderDate: orderDate,
                 Passengers: $("#orderNames").val(),
-                Email: $("#orderEmail").val()
+                Email: $("#orderEmail").val(),
+                PackageId: document.getElementById('package') ? (document.getElementById('package').checked ? packageId : "") : ""
             }
             ajaxCall("POST", "../api/flights", JSON.stringify(o), flightPostSuccess, (err) => swal("Error: " + err));
             return false; // preventDefault

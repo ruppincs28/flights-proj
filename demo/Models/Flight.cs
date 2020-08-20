@@ -23,6 +23,7 @@ namespace demo.Models
         DateTime orderDate;
         string passengers;
         string email;
+        string packageId;
 
         static public List<Flight> list = new List<Flight>();
 
@@ -42,10 +43,11 @@ namespace demo.Models
         public DateTime OrderDate { get => orderDate; set => orderDate = value; }
         public string Passengers { get => passengers; set => passengers = value; }
         public string Email { get => email; set => email = value; }
+        public string PackageId { get => packageId; set => packageId = value; }
 
         public Flight(string id, double price, DateTime departureTime, DateTime arrivalTime, string from, 
                         string codeFrom, string to, string codeTo, string stops, string airline, string numStops, 
-                            string flyDuration, List<Leg> legArr, DateTime orderDate, string passengers, string email)
+                            string flyDuration, List<Leg> legArr, DateTime orderDate, string passengers, string email, string packageId)
         {
             this.Id = id;
             this.Price = price;
@@ -63,6 +65,7 @@ namespace demo.Models
             this.OrderDate = orderDate;
             this.Passengers = passengers;
             this.Email = email;
+            this.PackageId = packageId;
         }
 
         public Flight()

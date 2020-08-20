@@ -55,12 +55,13 @@ namespace demo.Models.DataBaseServices
             String command;
 
             StringBuilder sb = new StringBuilder();
+            var packageId = flight.PackageId != "" ? flight.PackageId : "noPackage";
             // use a string builder to create the dynamic string
-            sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}', N'{6}', N'{7}', N'{8}', N'{9}', N'{10}', N'{11}')",
+            sb.AppendFormat("Values(N'{0}', N'{1}', N'{2}', N'{3}', N'{4}', N'{5}', N'{6}', N'{7}', N'{8}', N'{9}', N'{10}', N'{11}', N'{12}')",
                 flight.Id.Replace("'", "''"), flight.CodeFrom.Replace("'", "''"), flight.CodeTo.Replace("'", "''"), flight.DepartureTime,
                 flight.ArrivalTime, flight.FlyDuration.Replace("'", "''"), flight.Price, flight.NumStops.Replace("'", "''"),
-                flight.OrderDate, flight.Passengers, flight.Email, flight.Stops);
-            String prefix = "INSERT INTO Flights_Ex3_Final_CS " + "(id, [from], [to], departuretime, arrivaltime, flyduration, price, numstops, orderdate, passengers, email, stops) ";
+                flight.OrderDate, flight.Passengers, flight.Email, flight.Stops, packageId);
+            String prefix = "INSERT INTO Flights_Final_CS " + "(id, [from], [to], departuretime, arrivaltime, flyduration, price, numstops, orderdate, passengers, email, stops, packageId) ";
             command = prefix + sb.ToString();
 
             return command;
@@ -75,7 +76,7 @@ namespace demo.Models.DataBaseServices
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT * FROM Flights_Ex3_Final_CS";
+                String selectSTR = "SELECT * FROM Flights_Final_CS";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader

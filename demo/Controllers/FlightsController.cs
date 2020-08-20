@@ -25,7 +25,10 @@ namespace demo.Controllers
         // POST api/<controller>
         public void Post([FromBody]Flight flight)
         {
-            flight.insert();
+            if (flight.insert() != 0)
+            {
+                //Package.UpdateRevenue();
+            }
         }
 
         // PUT api/<controller>/5

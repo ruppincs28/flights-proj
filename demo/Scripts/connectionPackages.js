@@ -154,12 +154,18 @@ function updatePanelPic(cityPic, divId) {
 
 function handlePackageInOrderForm(selector) {
     // some adjustments are needed in order forms for package + flight combo
+    $('label[for="package"]').remove();
+    $('#package').remove();
+    $('#packagePriceStr').remove();
     if ($(selector).data("haspackage") === "hasPackage") {
         $('label[for="agree"]').after('<label for="package">' +
             '<input type="checkbox" checked="checked" name="package" id="package" >&nbsp;&nbsp;Also include package for max connection' +
             '</label>');
-    } else {
-        $('label[for="package"]').remove();
-        $('#package').remove();
+        let total = parseInt($(selector).data("price").substring(0, $(selector).data("price").length - 2)) + parseInt($(selector).data("packageprice"));
+        $("#flightPriceStr").after('<div id="packagePriceStr"><div><b>&nbsp;&nbsp;Price of package: '
+            + $(selector).data("packageprice") + '€</b></div><div><b>&nbsp;&nbsp;Total Price: ' + total + '€' + '</b></div><br></div>');
+        $('#package').click(function () {
+            $("#packagePriceStr").toggle(this.checked);
+        });
     }
 }

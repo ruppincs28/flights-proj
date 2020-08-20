@@ -53,7 +53,7 @@ namespace demo.Models.DataBaseServices
         {
             String command = "";
 
-            String legPrefix = "INSERT INTO Legs_Ex3_Final_CS " + "(id, tripid, legnum, flightno, [from], [to], airlinecode, departuretime, arrivaltime, flyduration) ";
+            String legPrefix = "INSERT INTO Legs_Final_CS " + "(id, tripid, legnum, flightno, [from], [to], airlinecode, departuretime, arrivaltime, flyduration) ";
 
             // build insert legs command
             foreach (Leg leg in legArr)
