@@ -95,7 +95,7 @@ $(document).ready(function () {
             $("#adminLoginForm").show();
             return;
         }
-        ajaxCall("GET", "../api/flights", "", getOrdersSuccess, discountErr); // load orders from server
+        ajaxCall("GET", "../api/packages", "", getOrdersSuccess, discountErr); // load orders from server
         $("#orderInterface").show();
     });
     $("#registerCompany").click(() => {
@@ -164,6 +164,7 @@ function getOrdersSuccess(orderdata) {
                         return `${row.Profit} %`;
                     }
                 },
+                { data: "City" },
                 {
                     data: "ArrivalTime",
                     render: function (data, type, row, meta) {
@@ -182,9 +183,12 @@ function getOrdersSuccess(orderdata) {
                         return row.Date.replace("T", " ");
                     }
                 },
-                { data: "Stops" },
-                { data: "FlyDuration" },
-                { data: "Passengers" }
+                {
+                    data: "SalesProfit",
+                    render: function (data, type, row, meta) {
+                        return `${row.SalesProfit} €`;
+                    }
+                },
             ],
         });
         $("#orderLoading").hide();
