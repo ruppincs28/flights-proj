@@ -366,7 +366,7 @@ function handleSearchSuccess(data) {
         let rowStr;
         let packageStr = "";
         let imageDivId = "";
-        if (packageObj !== false) {
+        if (packageObj !== false && typeof packageObj !== 'undefined') {
             rowStr = '<tr data-toggle="collapse" data-target="#entry' + i + '" class="accordion-toggle ' + 'hasTooltip' + '">';
             let assembleRes = assemblePackageStr(maxConnectionStr, packageObj);
             packageStr = assembleRes[0];
