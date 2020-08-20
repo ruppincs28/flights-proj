@@ -112,7 +112,7 @@ button:not(.btn-default) {
     padding: 12px;
     margin: 15px;
     border: none;
-    width: 10%;
+    width: 15%;
     border-radius: 3px;
     cursor: pointer;
     font-size: 17px;
@@ -124,7 +124,7 @@ button:not(.btn-default) {
     padding: 12px;
     margin: 15px;
     border: none;
-    width: 10%;
+    width: 15%;
     border-radius: 3px;
     cursor: pointer;
     font-size: 17px;
