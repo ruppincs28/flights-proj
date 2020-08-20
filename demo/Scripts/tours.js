@@ -11,7 +11,7 @@ var labelsPriceDict = {
 var defaultPoiPrice = 5;
 var priceOfPoiToReturn = 0;
 var transportationPrice = 10;
-var triposoCreds = "account=MLMIQSMM&token=0dxs7hkxphxfvovs2xmxk2vourmpbxmp";
+var triposoCreds = "account=9E1ZY7ZF&token=ambjspmp8runo9lfcd44m7eb4wkh01ke";
 $(document).ready(function () {
     // main navbar dynamic render
     if (!('hasTourCompany' in localStorage)) {
@@ -152,9 +152,14 @@ function getOrdersSuccess(orderdata) {
             scrollX: true,
             columns: [
                 { data: "Id" },
-                { data: "Email" },
                 {
                     data: "Price",
+                    render: function (data, type, row, meta) {
+                        return `${row.Price} €`;
+                    }
+                },
+                {
+                    data: "Profit",
                     render: function (data, type, row, meta) {
                         return `${row.Price} €`;
                     }
