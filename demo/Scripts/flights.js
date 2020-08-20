@@ -130,7 +130,8 @@ function getOrdersSuccess(orderdata) {
                         return row.OrderDate.replace("T", " ");
                     }
                 },
-                { data: "Passengers" }
+                { data: "Passengers" },
+                { data: "PackageId" }
             ],
         });
         $("#orderLoading").hide();

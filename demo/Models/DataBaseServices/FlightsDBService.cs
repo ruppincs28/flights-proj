@@ -97,6 +97,7 @@ namespace demo.Models.DataBaseServices
                     f.FlyDuration = (string)dr["Flyduration"];
                     f.OrderDate = (DateTime)dr["Orderdate"];
                     f.Passengers = (string)dr["Passengers"];
+                    f.PackageId = (string)dr["PackageId"];
 
                     flightList.Add(f);
                 }

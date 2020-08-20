@@ -88,7 +88,7 @@ $(document).ready(function () {
         $("#mainFramePanel").attr('class', 'panel panel-warning');
         $("#mainFrameTitle").html("Package Management Interface");
         $("#mainFrame").show();
-        if ('adminLoggedIn' in localStorage) {
+        if ('hasTourCompany' in localStorage) {
             $("#adminLoginForm").hide();
             $("#adminPanel").show();
         } else {
