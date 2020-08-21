@@ -125,6 +125,7 @@ $(document).ready(function () {
 
     $("#discountCancelBTN").on("click", function () {
         discount = null;
+        $("#orderTable tr").removeClass("selected"); // remove selected class from rows that were selected before
         $("#discountEditDiv").hide();
     });
 

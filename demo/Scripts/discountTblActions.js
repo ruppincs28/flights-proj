@@ -35,7 +35,7 @@ function buttonEvents() {
 
 // mark the selected row
 function markSelected(btn) {
-    $("#discountTable tr").removeClass("selected"); // remove seleced class from rows that were selected before
+    $("#orderTable tr").removeClass("selected"); // remove selected class from rows that were selected before
     row = (btn.parentNode).parentNode; // button is in TD which is in Row
     row.className = 'selected'; // mark as selected
 }
