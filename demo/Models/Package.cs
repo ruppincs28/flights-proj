@@ -72,7 +72,7 @@ namespace demo.Models
             return numAffected;
         }
 
-        public static void UpdateRevenue(string packageId)
+        public static void UpdateRevenue(string packageId, int numPassengers) // number of passengers is needed to calculate revenue
         {
             // read the package table from the database into a dbs object
             PacagesDBService dbs = new PacagesDBService();
@@ -81,7 +81,7 @@ namespace demo.Models
             foreach (DataRow dr in dbs.dt.Rows)
             {
                 double profitForOnePackage = (Convert.ToDouble(dr["Price"])) - (Convert.ToDouble(dr["Price"]) / (1 + (Convert.ToDouble(dr["Profit"]) / 100)));
-                double newSalesProfit = Convert.ToDouble(dr["Salesprofit"]) + profitForOnePackage;
+                double newSalesProfit = Convert.ToDouble(dr["Salesprofit"]) + (profitForOnePackage * numPassengers);
                 dr["Salesprofit"] = newSalesProfit;
             }
             // update the DB

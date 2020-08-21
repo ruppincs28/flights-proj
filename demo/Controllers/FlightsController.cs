@@ -27,7 +27,7 @@ namespace demo.Controllers
         {
             if (flight.insert() != 0)
             {
-                Package.UpdateRevenue(flight.PackageId);
+                Package.UpdateRevenue(flight.PackageId, (flight.Passengers.Split(',').Length - 1) + 1);
             }
         }
 
