@@ -100,7 +100,7 @@ function updateSuccess(newPrice) {
 
 // success callback function after delete
 function deleteSuccess() {
-    $('#discountInterfaceBTN').trigger('click'); // triggering this click will result in refreshing datatable with new values
+    $('#orderInterfaceBTN').trigger('click'); // triggering this click will result in refreshing datatable with new values
     $("#discountEditDiv").hide();
     swal("Deleted Successfuly!", "Great Job", "success");
 }
