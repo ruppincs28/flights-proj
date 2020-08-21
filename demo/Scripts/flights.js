@@ -1,6 +1,6 @@
 ﻿var codesUrl = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name";
 var airlineCodesUrl = "https://api.skypicker.com/airlines?";
-var triposoCreds = "account=9E1ZY7ZF&token=ambjspmp8runo9lfcd44m7eb4wkh01ke";
+var triposoCreds = "account=26TDH5G6&token=ut3j86mjc0h4vpw90ihnyjxbr82ayc7c";
 $(document).ready(function () {
     // populate datalist with data
     if (!('locationCodes' in localStorage)) {

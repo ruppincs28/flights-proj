@@ -26,7 +26,7 @@ namespace Tests
 
             IWebElement userCompanyNameEntry = ChromeDriver.FindElement(By.Id("companyUsername"));
             Thread.Sleep(3000);
-            userCompanyNameEntry.SendKeys("TravisSCompany");
+            userCompanyNameEntry.SendKeys("testCompanySelenium2");
 
             IWebElement userCompanyImageEntry = ChromeDriver.FindElement(By.Id("companyImage"));
             Thread.Sleep(3000);
@@ -131,7 +131,7 @@ namespace Tests
             showPackageInFlightButton.Click();
             Thread.Sleep(6000);
 
-            IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[@class='hasTooltip']//input"));
+            IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[contains(@class, 'hasTooltip')]//input"));
             orderFlightWithPackageButton.Click();
             Thread.Sleep(10000);
 
