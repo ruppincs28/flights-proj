@@ -75,18 +75,18 @@ function diffInMinutes(dt2, dt1) {
 
 
 function validateTime() {
+    let thisRef = document.getElementById('departureTime');
     let arrivalTime = $("#arrivalTime").val();
     let departureTime = $("#departureTime").val();
     let regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
     let timeRegexMatch = arrivalTime.match(regex) !== null && departureTime.match(regex) !== null;
-
-    if (!timeRegexMatch || checkDepartureBeforeArrival(arrivalTime, departureTime)) {
-        this.validity.valid = false;
-        this.setCustomValidity('Time is not in correct format or departure is before arrival');
+    if (!timeRegexMatch || checkDepartureBeforeArrival(departureTime, arrivalTime)) {
+        thisRef.validity.valid = false;
+        thisRef.setCustomValidity('Time is not in correct format or departure is before arrival');
     }
     else {
-        this.validity.valid = true;
-        this.setCustomValidity('');
+        thisRef.validity.valid = true;
+        thisRef.setCustomValidity('');
     }
 }
 
@@ -95,7 +95,7 @@ function checkDepartureBeforeArrival(departure, arrival) {
     departure += ":00";
     arrival += ":00";
 
-    if (departure > arrival)
+    if (departure < arrival)
         return true;
     return false;
 }

@@ -70,7 +70,7 @@ $(document).ready(function () {
     $('.clockpicker').clockpicker({
         placement: 'top',
         align: 'left',
-        donetext: 'Done'
+        autoclose: true,
     });
 
     // interface show/hide handling
