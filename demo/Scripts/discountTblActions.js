@@ -1,18 +1,10 @@
 ﻿// wire all the buttons to their functions
 function buttonEvents() {
 
-    $(document).on("click", ".discountNewBtn", function () {
-        $(".discountNewBtn").attr("data-clickedflag", "yes");
-        $("#discountTable tr").removeClass("selected");
-        $("#discountEditDiv").show();
-        clearFields();
-        $("#discountEditDiv :input").prop("disabled", false); // new mode: enable all controls in the form
-    });
-
     $(document).on("click", ".discountEditBtn", function () {
         markSelected(this);
         $("#discountEditDiv").show();
-        $("#discountEditDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
+        enableEditModeAllowedControls(); // enable LOGICALLY allowed controls
         populateFields(); // fill the form fields according to the selected row
     });
 
@@ -21,6 +13,7 @@ function buttonEvents() {
         $("#discountEditDiv").show();
         row.className = 'selected';
         $("#discountEditDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form
+        $("#discountCancelBTN").prop("disabled", false); // view mode: enable cancel button
         populateFields();
     });
 
@@ -49,72 +42,60 @@ function markSelected(btn) {
 
 // Delete a car from the server
 function deleteDiscount(id) {
-    ajaxCall("DELETE", "../api/discounts/" + id, "", deleteSuccess, (err) => swal("Error: " + err));
+    ajaxCall("DELETE", "../api/packages/" + id, "", deleteSuccess, (err) => swal("Error: " + err));
 }
 
 function discountEditSubmitHandler() {
-    let idToPass = 0; // dummy id to pass in "new" mode
-    if (getDiscount())
-        idToPass = getDiscount().Id; // actual id to pass in "edit" mode
+    idToPass = getDiscount().Id;
 
     let discountToSave = {
         Id: idToPass,
-        Airline: $("#discountAirline").val(),
-        From: $("#discountFrom").val(),
-        To: $("#discountTo").val(),
-        StartDate: $("#discountStartDate").val(),
-        EndDate: $("#discountEndDate").val(),
-        DiscountRate: $("#discountRate").val(),
+        Price: parseFloat($("#discountPrice").val()),
+        Profit: parseFloat($("#discountProfitPerSale").val().replace("%", "")),
+        City: $("#discountTo").val(),
+        ArrivalTime: `${$("#discountArrivalTime").val()}:00`,
+        DepartureTime: `${$("#discountDepartureTime").val()}:00`,
+        Date: $("#discountDate").val(),
+        SalesProfit: parseFloat($("#discountSalesProfit").val()),
     }
     
-    if ($(".discountNewBtn").data("clickedflag") === "yes") {
-        ajaxCall("POST", "../api/discounts", JSON.stringify(discountToSave), insertSuccess, (err) => swal("Error: " + err));
-        $(".discountNewBtn").attr("data-clickedflag", "no");
-    } else {
-        ajaxCall("PUT", "../api/discounts/edit", JSON.stringify(discountToSave), updateSuccess, (err) => swal("Error: " + err));
-    }
+    ajaxCall("PUT", "../api/packages/edit", JSON.stringify(discountToSave), updateSuccess, (err) => swal("Error: " + err));
     return false; // preventDefault
 }
 
 // fill the form fields
 function populateFields() {
     discount = getDiscount();
-    $("#discountAirline").val(discount.Airline);
-    $("#discountFrom").val(discount.From);
-    $("#discountTo").val(discount.To);
-    $("#discountStartDate").val(discount.StartDate.split("T")[0]);
-    $("#discountEndDate").val(discount.EndDate.split("T")[0]);
-    $("#discountRate").val(discount.DiscountRate);
+    $("#discountPrice").val(discount.Price);
+    $("#discountProfitPerSale").val(`${discount.Profit}%`);
+    $("#discountTo").val(discount.City);
+    $("#discountArrivalTime").val(discount.ArrivalTime);
+    $("#discountDepartureTime").val(discount.DepartureTime);
+    $("#discountDate").val(discount.Date.split("T")[0]);
+    $("#discountSalesProfit").val(discount.SalesProfit);
 }
-
 
 // fill the form fields
 function clearFields() {
-    $("#discountAirline").val("");
-    $("#discountFrom").val("");
+    $("#discountPrice").val("");
+    $("#discountProfitPerSale").val("");
     $("#discountTo").val("");
-    $("#discountStartDate").val("");
-    $("#discountEndDate").val("");
-    $("#discountRate").val("");
+    $("#discountArrivalTime").val("");
+    $("#discountDepartureTime").val("");
+    $("#discountDate").val("");
+    $("#discountSalesProfit").val("");
 }
 
 // get the selected discount, according to the row which is selected
 function getDiscount() {
-    return tbl.row('.selected').data();
+    return orderTbl.row('.selected').data();
 }
 
 // success callback function after update
-function updateSuccess() {
-    $('#discountInterfaceBTN').trigger('click'); // triggering this click will result in refreshing datatable with new values
+function updateSuccess(newPrice) {
+    $('#orderInterfaceBTN').trigger('click'); // triggering this click will result in refreshing datatable with new values
     $("#discountEditDiv").hide();
-    swal("Updated Successfuly!", "Great Job", "success");
-}
-
-// success callback function after insert
-function insertSuccess() {
-    $('#discountInterfaceBTN').trigger('click'); // triggering this click will result in refreshing datatable with new values
-    $("#discountEditDiv").hide();
-    swal("Inserted Successfuly!", "Great Job", "success");
+    swal("Updated Successfuly! New Price Of Package: " + newPrice, "Great Job", "success");
 }
 
 // success callback function after delete
@@ -131,4 +112,11 @@ function redrawTable(tbl, data) {
         tbl.row.add(data[i]);
     }
     tbl.draw();
+}
+
+// enable the allowed controls in edit form 
+function enableEditModeAllowedControls() {
+    $("#discountEditDiv :input").attr("disabled", "disabled"); // edit mode: disable all controls
+    $("#discountProfitPerSale").prop("disabled", false); // edit mode: enable the only logically editable control
+    $("#discountSaveBTN, #discountCancelBTN").prop("disabled", false); // edit mode: enable save and cancel buttons
 }

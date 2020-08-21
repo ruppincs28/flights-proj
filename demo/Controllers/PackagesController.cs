@@ -34,8 +34,16 @@ namespace demo.Controllers
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            Package.DeletePackage(id);
+        }
+
+        [HttpPut]
+        [Route("api/packages/edit")]
+        public string modifyDiscount([FromBody]Package package)
+        {
+            return Package.ModifyPackage(package); // returns the new price
         }
     }
 }

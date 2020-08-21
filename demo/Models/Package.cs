@@ -87,5 +87,41 @@ namespace demo.Models
             // update the DB
             dbs.update();
         }
+
+        public static string ModifyPackage(Package package)
+        {
+            // read the discount table from the database into a dbs object
+            PacagesDBService dbs = new PacagesDBService();
+            dbs = dbs.readPackage(package.Id);
+
+            double newPrice = 0;
+
+            foreach (DataRow dr in dbs.dt.Rows)
+            {
+                double originalPrice = Convert.ToDouble(dr["Price"]) / (1 + (Convert.ToDouble(dr["Profit"]) / 100));
+                newPrice = originalPrice * (1 + (package.Profit / 100));
+                dr["Price"] = newPrice;
+                dr["Profit"] = package.Profit;
+            }
+            // update the DB
+            dbs.update();
+
+            // return updated price string
+            return $"{newPrice}€";
+        }
+
+        public static void DeletePackage(string id)
+        {
+            // read the discount table from the database into a dbs object
+            PacagesDBService dbs = new PacagesDBService();
+            dbs = dbs.readPackage(id);
+
+            foreach (DataRow dr in dbs.dt.Rows)
+            {
+                dr.Delete();
+            }
+            // update the DB
+            dbs.update();
+        }
     }
 }

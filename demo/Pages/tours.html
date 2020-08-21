@@ -84,6 +84,7 @@
                                 <table id="orderTable" class="display nowrap" style="width:100%">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Id</th>
                                             <th>Price</th>
                                             <th>Profit % per sale</th>
@@ -96,6 +97,57 @@
                                     </thead>
                                 </table>
                             </form>
+                            <br />
+                            <div id="discountEditDiv" style="display: none;">
+                                <form id="discountForm">
+                                    <div class="form-group row" style="margin-left: 10px;">
+                                        <div class="form-group">
+                                            <label for="discountPrice"><span class="red-star">★ </span>Price in €</label>
+                                            <input type="text" class="form-control" id="discountPrice" placeholder="Enter the price as a number" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="discountProfitPerSale"><span class="red-star">★ </span>Profit % per sale (After saving you will get notified of the updated price in €)</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="discountProfitPerSale"
+                                                   placeholder="Enter the Profit Rate"
+                                                   pattern="^((100)|(\d{1,2}(\.\d*)?))%$"
+                                                   oninvalid="this.setCustomValidity('Enter a number (<100) followed by %, for example: 25%')"
+                                                   oninput="this.setCustomValidity('')"
+                                                   required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="discountTo"><span class="red-star">★ </span>City</label>
+                                            <input type="text" class="form-control" id="discountTo" placeholder="Enter the City" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="discountArrivalTime"><span class="red-star">★ </span>Arrival Time</label>
+                                            <input type="text" class="form-control" id="discountArrivalTime" placeholder="Enter the Start Date" style="width: 15%" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="discountDepartureTime"><span class="red-star">★ </span>Departure Time</label>
+                                            <input type="text" class="form-control" id="discountDepartureTime" placeholder="Enter the End Date" style="width: 15%" required />
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="discountDate"><span class="red-star">★ </span>Date</label>
+                                            <input type="text" class="form-control" id="discountDate" placeholder="Enter the Date" style="width: 15%" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="discountSalesProfit"><span class="red-star">★ </span>Profit From Sales in €</label>
+                                            <input type="text" class="form-control" id="discountSalesProfit" placeholder="Enter the Sales Profit" style="width: 15%" required />
+                                        </div>
+
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg" id="discountSaveBTN">Save</button>
+                                    <input type="button" class="btn btn-warning btn-lg" id="discountCancelBTN" value="Cancel" />
+                                </form>
+                            </div>
                         </div>
                         <div id="discountInterface" class="container-fluid" style="display: none;">
                             <span id="discountLoading">Loading...</span>
@@ -116,51 +168,6 @@
                                     </thead>
                                 </table>
                             </form>
-                            <br />
-                            <div id="discountEditDiv" style="display: none;">
-                                <form id="discountForm">
-                                    <div class="form-group row" style="margin-left: 10px;">
-                                        <div class="form-group">
-                                            <label for="discountAirline"><span class="red-star">★ </span>Airline Code</label>
-                                            <input type="text" class="form-control" id="discountAirline" placeholder="Enter the Airline name" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="discountFrom"><span class="red-star">★ </span>From</label>
-                                            <input type="text" class="form-control" id="discountFrom" placeholder="Enter the FROM location" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="discountTo"><span class="red-star">★ </span>To</label>
-                                            <input type="text" class="form-control" id="discountTo" placeholder="Enter the TO location" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="discountStartDate"><span class="red-star">★ </span>Start Date</label>
-                                            <input type="date" class="form-control" id="discountStartDate" placeholder="Enter the Start Date" style="width: 15%" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="discountEndDate"><span class="red-star">★ </span>End Date</label>
-                                            <input type="date" class="form-control" id="discountEndDate" placeholder="Enter the End Date" style="width: 15%" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="discountRate"><span class="red-star">★ </span>Discount Rate</label>
-                                            <input type="text"
-                                                   class="form-control"
-                                                   id="discountRate"
-                                                   placeholder="Enter the Discount Rate"
-                                                   pattern="^((100)|(\d{1,2}(\.\d*)?))%$"
-                                                   oninvalid="this.setCustomValidity('Enter a number (<100) followed by %, for example: 25%')"
-                                                   oninput="this.setCustomValidity('')"
-                                                   required />
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary btn-lg" id="discountSaveBTN">Save</button>
-                                    <input type="button" class="btn btn-warning btn-lg" id="discountCancelBTN" value="Cancel" />
-                                </form>
-                            </div>
                         </div>
                     </div>
                     <div id="flightBookForm" style="display: none; margin: 15px;">
@@ -225,7 +232,7 @@
                                         <input id="companyName" type="text" name="companyName" disabled>
                                         <label for="profit"><i class="fa fa-envelope"></i> <b>Profit Rate:</b></label>
                                         <input type="text"
-                                               id="profit" 
+                                               id="profit"
                                                name="profit"
                                                placeholder="Enter the Profit Percentage You Are Expecting"
                                                pattern="^((100)|(\d{1,2}(\.\d*)?))%$"

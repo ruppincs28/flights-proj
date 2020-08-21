@@ -128,7 +128,7 @@ $(document).ready(function () {
         $("#discountEditDiv").hide();
     });
 
-    $("#discountForm").submit(discountEditSubmitHandler); // wire the submit event to a function called f1
+    $("#discountForm").submit(discountEditSubmitHandler); // wire the submit event of datatable edit form to a function
     $("#searchForm").submit(handleSearch);
     $("#myFlightsBTN").click(handleMyFlights);
     $('#arrivalTime, #departureTime').on("blur", validateTime);
@@ -151,6 +151,16 @@ function getOrdersSuccess(orderdata) {
             pageLength: 5,
             scrollX: true,
             columns: [
+                {
+                    render: function (data, type, row, meta) {
+                        let dataDiscount = "data-discountId='" + row.Id + "'";
+
+                        editBtn = "<button type='button' class = 'discountEditBtn btn btn-success' " + dataDiscount + "> Edit </button>";
+                        viewBtn = "<button type='button' class = 'discountViewBtn btn btn-info' " + dataDiscount + "> View </button>";
+                        deleteBtn = "<button type='button' class = 'discountDeleteBtn btn btn-danger' " + dataDiscount + "> Delete </button>";
+                        return editBtn + viewBtn + deleteBtn;
+                    }
+                },
                 { data: "Id" },
                 {
                     data: "Price",
@@ -360,7 +370,7 @@ function handleSearch() {
 
 function handleSearchSuccess(data) {
     dataArr = data.results[0].days;
-    
+
     if (dataArr.length === 0) {
         $("#tablePH").empty()
         $("#tablePH").append(
