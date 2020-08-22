@@ -11,7 +11,7 @@ var labelsPriceDict = {
 var defaultPoiPrice = 5;
 var priceOfPoiToReturn = 0;
 var transportationPrice = 10;
-var triposoCreds = "account=26TDH5G6&token=ut3j86mjc0h4vpw90ihnyjxbr82ayc7c";
+var triposoCreds = "account=96G4PAPO&token=6uc7eck2lquram5s75yvbmnoq10j5f4f";
 $(document).ready(function () {
     // main navbar dynamic render
     if (!('hasTourCompany' in localStorage)) {

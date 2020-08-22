@@ -94,7 +94,6 @@ function validatePackageIsViable(packageInfo, city, arrival, departure) {
     let itineraryArr = triposoRes.results[0].days[0].itinerary_items;
     let exactPackage = getExactPackageSequence(itineraryArr);
     let identical = ((exactPackage.length === suspectedPackageSequence.length) && exactPackage.every(function (value, index) { return value === suspectedPackageSequence[index] }));
-    console.log(identical)
     if (identical)
         return true;
     return false;
