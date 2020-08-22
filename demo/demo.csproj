@@ -222,12 +222,15 @@
     <Content Include="Pages\css\bootstrap-clockpicker.min.css" />
     <Content Include="Pages\css\indexStyle.css" />
     <Content Include="Pages\flights.html" />
+    <Content Include="Pages\formBackground.jpg" />
     <Content Include="Pages\img\sprites\sprite.png" />
     <Content Include="Pages\index.html" />
     <Content Include="Pages\logo.png" />
     <Content Include="Pages\css\style.css" />
-    <Content Include="Pages\testing_html_patterns.html" />
+    <Content Include="Pages\packageFormBackground.jpg" />
+    <Content Include="Pages\plane.png" />
     <Content Include="Pages\tours.html" />
+    <Content Include="Pages\vendor.png" />
     <Content Include="Scripts\ajaxCalls.js" />
     <Content Include="Scripts\bootstrap-clockpicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -256,12 +259,16 @@
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile10.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
     <Content Include="README.md" />
     <None Include="Properties\PublishProfiles\FolderProfile4.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile5.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile6.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile7.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile8.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile9.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\connectionPackages.js" />
     <Content Include="Scripts\discountTblActions.js" />

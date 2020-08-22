@@ -13,12 +13,14 @@ namespace XUnitSeleniumTests
     {
         string companyName;
         string email;
+        string rootUrl;
 
         public SeleniumTest()
         {
             // setup
-            companyName = "testCompanySelenium2";
+            companyName = "testCompanySelenium";
             email = "selenium@selenium.com";
+            rootUrl = "http://proj.ruppin.ac.il/igroup28/test2/tar4";
         }
 
         public void Dispose()
@@ -26,10 +28,10 @@ namespace XUnitSeleniumTests
             // teardown
 
             // delete company by name (deletes packages of company on cascade)
-            DeleteAPICall($"http://localhost:55739/api/companies/deleteByName?companyName={companyName}");
+            DeleteAPICall($"{rootUrl}/api/companies/deleteByName?companyName={companyName}");
 
             // delete flight by email
-            DeleteAPICall($"http://localhost:55739/api/flights/deleteByEmail?email={email}");
+            DeleteAPICall($"{rootUrl}/api/flights/deleteByEmail?email={email}");
         }
 
         private void DeleteAPICall(string url)
@@ -49,8 +51,8 @@ namespace XUnitSeleniumTests
         {
             IWebDriver ChromeDriver = new ChromeDriver($"{Directory.GetCurrentDirectory()}");
             Actions actions = new Actions(ChromeDriver);
-            string indexPageUrl = "http://localhost:55739/Pages/index.html";
-            string flightsPageUrl = "http://localhost:55739/Pages/flights.html";
+            string indexPageUrl = $"{rootUrl}/Pages/index.html";
+            string flightsPageUrl = $"{rootUrl}/Pages/flights.html";
             ChromeDriver.Navigate().GoToUrl(indexPageUrl);
 
             IWebElement packageLogo = ChromeDriver.FindElement(By.XPath("//img[@src='vendor.png']"));
@@ -169,6 +171,7 @@ namespace XUnitSeleniumTests
 
             // A package we expect to exist for this flight, actually does, and it is proposed to the user
             Assert.True(ChromeDriver.FindElements(By.XPath("//tr[contains(@class, 'hasTooltip')]//input")).Count > 0);
+
             actions.MoveToElement(ChromeDriver.FindElement(By.Id("logo")));
             Thread.Sleep(5000);
             IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[contains(@class, 'hasTooltip')]//input"));
@@ -220,8 +223,9 @@ namespace XUnitSeleniumTests
         }
 
         [Fact]
-        public void ValuesAreNotEqual()
+        public void TestValuesAreNotEqual()
         {
+            // Indication test
             int x = 1;
             int y = 2;
             Assert.NotEqual(x, y);
