@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using Xunit;
 
 namespace XUnitSeleniumTests
@@ -16,7 +17,6 @@ namespace XUnitSeleniumTests
         public SeleniumTest()
         {
             // setup
-
             companyName = "testCompanySelenium2";
             email = "selenium@selenium.com";
         }
@@ -29,7 +29,7 @@ namespace XUnitSeleniumTests
             DeleteAPICall($"http://localhost:55739/api/companies/deleteByName?companyName={companyName}");
 
             // delete flight by email
-            //DeleteAPICall($"http://localhost:55739/api/flights/deleteByEmail?email={email}");
+            DeleteAPICall($"http://localhost:55739/api/flights/deleteByEmail?email={email}");
         }
 
         private void DeleteAPICall(string url)
@@ -48,6 +48,7 @@ namespace XUnitSeleniumTests
         public void TestBuyPackageAndAvailableInFlight()
         {
             IWebDriver ChromeDriver = new ChromeDriver($"{Directory.GetCurrentDirectory()}");
+            Actions actions = new Actions(ChromeDriver);
             string indexPageUrl = "http://localhost:55739/Pages/index.html";
             string flightsPageUrl = "http://localhost:55739/Pages/flights.html";
             ChromeDriver.Navigate().GoToUrl(indexPageUrl);
@@ -72,27 +73,22 @@ namespace XUnitSeleniumTests
             Thread.Sleep(3000);
             userCompanyPasswordEntry.SendKeys("1234");
 
-            IWebElement userCompanyAgreeCheckbox = ChromeDriver.FindElement(By.Id("companyAgree"));
             Thread.Sleep(3000);
+            IWebElement userCompanyAgreeCheckbox = ChromeDriver.FindElement(By.Id("companyAgree"));
             userCompanyAgreeCheckbox.Click();
             userCompanyAgreeCheckbox.Click();
 
-            IWebElement submitCompanyRegisterButton = ChromeDriver.FindElement(By.Id("submitCompanyRegister"));
             Thread.Sleep(3000);
+            IWebElement submitCompanyRegisterButton = ChromeDriver.FindElement(By.Id("submitCompanyRegister"));
             submitCompanyRegisterButton.Click();
 
-            Thread.Sleep(6000);
-
-
+            Thread.Sleep(30000);
             IWebElement searchMenuButton = ChromeDriver.FindElement(By.Id("searchBookFlights"));
-            Thread.Sleep(5000);
             searchMenuButton.Click();
 
             IWebElement destinationCityEntry = ChromeDriver.FindElement(By.Name("sources"));
             Thread.Sleep(3000);
             destinationCityEntry.SendKeys("Istanbul");
-
-
 
             Thread.Sleep(3000);
             DateTime today = DateTime.Today.AddDays(3);
@@ -114,7 +110,11 @@ namespace XUnitSeleniumTests
             searchButton.Click();
 
             Thread.Sleep(15000);
-            ChromeDriver.FindElement(By.XPath("//input[@class='addButton btn btn-primary'][@value='Order']")).Click();
+
+            IWebElement orderButton = ChromeDriver.FindElement(By.XPath("//input[@class='addButton btn btn-primary'][@value='Order']"));
+            actions.MoveToElement(orderButton);
+            Thread.Sleep(5000);
+            orderButton.Click();
 
             Thread.Sleep(5000);
             IWebElement profitEntry = ChromeDriver.FindElement(By.Id("profit"));
@@ -167,12 +167,54 @@ namespace XUnitSeleniumTests
             showPackageInFlightButton.Click();
             Thread.Sleep(6000);
 
-            //IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[contains(@class, 'hasTooltip')]//input"));
-            //orderFlightWithPackageButton.Click();
-            //Thread.Sleep(10000);
-
             // A package we expect to exist for this flight, actually does, and it is proposed to the user
             Assert.True(ChromeDriver.FindElements(By.XPath("//tr[contains(@class, 'hasTooltip')]//input")).Count > 0);
+            actions.MoveToElement(ChromeDriver.FindElement(By.Id("logo")));
+            Thread.Sleep(5000);
+            IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[contains(@class, 'hasTooltip')]//input"));
+            orderFlightWithPackageButton.Click();
+
+            Thread.Sleep(3000);
+            IWebElement orderNamesEntry = ChromeDriver.FindElement(By.Id("orderNames"));
+            orderNamesEntry.SendKeys("Benny, Anat");
+
+            Thread.Sleep(3000);
+			IWebElement orderEmailEntry = ChromeDriver.FindElement(By.Id("orderEmail"));
+            orderEmailEntry.SendKeys(email);
+			
+			Thread.Sleep(3000);
+			IWebElement orderPackageCheckbox = ChromeDriver.FindElement(By.Id("package"));
+			orderPackageCheckbox.Click();
+
+			Thread.Sleep(5000);
+			orderPackageCheckbox.Click();
+			
+			Thread.Sleep(3000);
+			IWebElement submitFlightOrderButton = ChromeDriver.FindElement(By.Id("submitOrder"));
+            submitFlightOrderButton.Click();
+			
+			Thread.Sleep(2000);
+            ChromeDriver.FindElement(By.XPath("//button[@class='swal-button swal-button--confirm']")).Click();
+			
+			adminInterfaceButton = ChromeDriver.FindElement(By.Id("orderInterfaceBTN"));
+            adminInterfaceButton.Click();
+
+            Thread.Sleep(3000);
+            IWebElement usernameEntry = ChromeDriver.FindElement(By.Id("username"));
+            usernameEntry.SendKeys("admin");
+
+            Thread.Sleep(3000);
+            IWebElement passwordEntry = ChromeDriver.FindElement(By.Id("password"));
+            passwordEntry.SendKeys("admin");
+
+            Thread.Sleep(3000);
+            IWebElement submitLoginButton = ChromeDriver.FindElement(By.Id("submitLogin"));
+            submitLoginButton.Click();
+
+            Thread.Sleep(2000);
+            ChromeDriver.FindElement(By.XPath("//button[@class='swal-button swal-button--confirm']")).Click();
+
+            Thread.Sleep(12000);
 
             ChromeDriver.Quit();
         }
