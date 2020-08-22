@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using demo.Models.DataBaseServices;
 
 namespace demo.Models
@@ -47,6 +48,20 @@ namespace demo.Models
         {
             CompaniesDBService companiesDBService = new CompaniesDBService();
             return companiesDBService.getCompanies();
+        }
+
+        public static void DeleteCompany(string companyName)
+        {
+            // read the discount table from the database into a dbs object
+            CompaniesDBService dbs = new CompaniesDBService();
+            dbs = dbs.readCompany(companyName);
+
+            foreach (DataRow dr in dbs.dt.Rows)
+            {
+                dr.Delete();
+            }
+            // update the DB
+            dbs.update();
         }
     }
 }

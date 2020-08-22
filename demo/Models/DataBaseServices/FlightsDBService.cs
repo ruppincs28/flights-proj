@@ -118,5 +118,35 @@ namespace demo.Models.DataBaseServices
 
             }
         }
+
+        public FlightsDBService readFlight(string email)
+        {
+            SqlConnection con = null;
+            try
+            {
+                con = connect("DBConnectionString");
+                da = new SqlDataAdapter("select * from flights_final_cs where email='" + email + "'", con);
+                SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                dt = ds.Tables[0];
+            }
+
+            catch (Exception ex)
+            {
+                // write errors to log file
+                // try to handle the error
+                throw ex;
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+            return this;
+        }
     }
 }

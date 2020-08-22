@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using demo.Models.DataBaseServices;
 
@@ -93,6 +94,20 @@ namespace demo.Models
         {
             FlightsDBService flightsDBService = new FlightsDBService();
             return flightsDBService.getFlights();
+        }
+
+        public static void DeleteFlight(string email)
+        {
+            // read the discount table from the database into a dbs object
+            FlightsDBService dbs = new FlightsDBService();
+            dbs = dbs.readFlight(email);
+
+            foreach (DataRow dr in dbs.dt.Rows)
+            {
+                dr.Delete();
+            }
+            // update the DB
+            dbs.update();
         }
     }
 }

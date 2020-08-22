@@ -35,7 +35,7 @@ namespace demo.Controllers
         {
         }
 
-        // DELETE api/<controller>/5
+        // DELETE api/values/5
         public void Delete(int id)
         {
         }
@@ -45,6 +45,13 @@ namespace demo.Controllers
         public List<Company> getCompanies()
         {
             return Company.GetCompanies();
+        }
+
+        [HttpDelete]
+        [Route("api/companies/deleteByName")]
+        public void Delete(string companyName)
+        {
+            Company.DeleteCompany(companyName);
         }
     }
 }

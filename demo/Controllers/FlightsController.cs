@@ -36,9 +36,16 @@ namespace demo.Controllers
         {
         }
 
-        // DELETE api/<controller>/5
+        // DELETE api/values/5
         public void Delete(int id)
         {
+        }
+
+        [HttpDelete]
+        [Route("api/flights/deleteByEmail")]
+        public void Delete(string email)
+        {
+            Flight.DeleteFlight(email);
         }
     }
 }

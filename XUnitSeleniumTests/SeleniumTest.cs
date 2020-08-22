@@ -1,19 +1,55 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Xunit;
 
-namespace Tests
+namespace XUnitSeleniumTests
 {
-    class ProjTests
+    public class SeleniumTest : IDisposable
     {
-        static void Main(string[] args)
+        string companyName;
+        string email;
+
+        public SeleniumTest()
+        {
+            // setup
+
+            companyName = "testCompanySelenium2";
+            email = "selenium@selenium.com";
+        }
+
+        public void Dispose()
+        {
+            // teardown
+
+            // delete company by name (deletes packages of company on cascade)
+            DeleteAPICall($"http://localhost:55739/api/companies/deleteByName?companyName={companyName}");
+
+            // delete flight by email
+            //DeleteAPICall($"http://localhost:55739/api/flights/deleteByEmail?email={email}");
+        }
+
+        private void DeleteAPICall(string url)
+        {
+            HttpWebRequest requestCompany = WebRequest.CreateHttp(url);
+            requestCompany.Method = "DELETE";
+
+            using (HttpWebResponse response = (HttpWebResponse)requestCompany.GetResponse())
+            {
+                int statusCode = (int)response.StatusCode;
+                Assert.True(statusCode >= 200 && statusCode <= 204);
+            }
+        }
+
+        [Fact]
+        public void TestBuyPackageAndAvailableInFlight()
         {
             IWebDriver ChromeDriver = new ChromeDriver($"{Directory.GetCurrentDirectory()}");
             string indexPageUrl = "http://localhost:55739/Pages/index.html";
             string flightsPageUrl = "http://localhost:55739/Pages/flights.html";
-            string toursPageUrl = "http://localhost:55739/Pages/tours.html";
             ChromeDriver.Navigate().GoToUrl(indexPageUrl);
 
             IWebElement packageLogo = ChromeDriver.FindElement(By.XPath("//img[@src='vendor.png']"));
@@ -26,7 +62,7 @@ namespace Tests
 
             IWebElement userCompanyNameEntry = ChromeDriver.FindElement(By.Id("companyUsername"));
             Thread.Sleep(3000);
-            userCompanyNameEntry.SendKeys("testCompanySelenium2");
+            userCompanyNameEntry.SendKeys(companyName);
 
             IWebElement userCompanyImageEntry = ChromeDriver.FindElement(By.Id("companyImage"));
             Thread.Sleep(3000);
@@ -52,7 +88,7 @@ namespace Tests
             Thread.Sleep(5000);
             searchMenuButton.Click();
 
-            IWebElement destinationCityEntry  = ChromeDriver.FindElement(By.Name("sources"));
+            IWebElement destinationCityEntry = ChromeDriver.FindElement(By.Name("sources"));
             Thread.Sleep(3000);
             destinationCityEntry.SendKeys("Istanbul");
 
@@ -69,7 +105,7 @@ namespace Tests
             arrivalTimeEntry.SendKeys("09:00");
 
             Thread.Sleep(3000);
-            IWebElement departureTimeEntry  = ChromeDriver.FindElement(By.Id("departureTime"));
+            IWebElement departureTimeEntry = ChromeDriver.FindElement(By.Id("departureTime"));
             departureTimeEntry.SendKeys("20:00");
 
             Thread.Sleep(5000);
@@ -81,7 +117,7 @@ namespace Tests
             ChromeDriver.FindElement(By.XPath("//input[@class='addButton btn btn-primary'][@value='Order']")).Click();
 
             Thread.Sleep(5000);
-            IWebElement profitEntry  = ChromeDriver.FindElement(By.Id("profit"));
+            IWebElement profitEntry = ChromeDriver.FindElement(By.Id("profit"));
             profitEntry.SendKeys("15%");
 
             Thread.Sleep(3000);
@@ -92,18 +128,18 @@ namespace Tests
             ChromeDriver.FindElement(By.XPath("//button[@class='swal-button swal-button--confirm']")).Click();
 
             Thread.Sleep(6000);
-            IWebElement adminInterfaceButton  = ChromeDriver.FindElement(By.Id("orderInterfaceBTN"));
+            IWebElement adminInterfaceButton = ChromeDriver.FindElement(By.Id("orderInterfaceBTN"));
             adminInterfaceButton.Click();
 
             Thread.Sleep(7000);
-            IWebElement logoutButton  = ChromeDriver.FindElement(By.TagName("a"));
+            IWebElement logoutButton = ChromeDriver.FindElement(By.TagName("a"));
             logoutButton.Click();
 
             Thread.Sleep(3000);
             IWebElement flyFrom = ChromeDriver.FindElement(By.Name("sources"));
             ChromeDriver.Navigate().GoToUrl(flightsPageUrl);
 
-            Thread.Sleep(7000);
+            Thread.Sleep(10000);
             searchMenuButton = ChromeDriver.FindElement(By.Id("searchBookFlights"));
             searchMenuButton.Click();
 
@@ -131,11 +167,22 @@ namespace Tests
             showPackageInFlightButton.Click();
             Thread.Sleep(6000);
 
-            IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[contains(@class, 'hasTooltip')]//input"));
-            orderFlightWithPackageButton.Click();
-            Thread.Sleep(10000);
+            //IWebElement orderFlightWithPackageButton = ChromeDriver.FindElement(By.XPath("//tr[contains(@class, 'hasTooltip')]//input"));
+            //orderFlightWithPackageButton.Click();
+            //Thread.Sleep(10000);
+
+            // A package we expect to exist for this flight, actually does, and it is proposed to the user
+            Assert.True(ChromeDriver.FindElements(By.XPath("//tr[contains(@class, 'hasTooltip')]//input")).Count > 0);
 
             ChromeDriver.Quit();
+        }
+
+        [Fact]
+        public void ValuesAreNotEqual()
+        {
+            int x = 1;
+            int y = 2;
+            Assert.NotEqual(x, y);
         }
     }
 }
